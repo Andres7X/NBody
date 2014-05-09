@@ -1,7 +1,9 @@
 package pap1213.assignment.nbody;
 import java.awt.Color;
 import java.util.ArrayList;
+import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.CyclicBarrier;
 import java.util.concurrent.Semaphore;
 
 public class Body extends Thread {
@@ -20,13 +22,12 @@ public class Body extends Thread {
 	private ArrayList<Body> bodies;
 	private P2d o;
 	
-	private Semaphore writeLock;
-	private Semaphore readLock;
-	private CountDownLatch writeLatch;
-	private CountDownLatch doneLatch;
+    private Semaphore bodyStop;
+	private CyclicBarrier writeBarrier;
+	private CyclicBarrier readBarrier;
 	
 	// create and initialize a new Body
-	public Body(int p, ArrayList<Body> bodies, P2d pos, V2d vel, int mass, Color randomColour,Semaphore writeLock,Semaphore readLock,CountDownLatch writeLatch,CountDownLatch doneLatch) {
+	public Body(int p, ArrayList<Body> bodies, P2d pos, V2d vel, int mass, Color randomColour,Semaphore bodyStop, CyclicBarrier readBarrier, CyclicBarrier writeBarrier) {
 		this.p = p;
 		this.bodies = bodies;
 		this.pos = new P2d(pos.x,pos.y);
@@ -34,10 +35,9 @@ public class Body extends Thread {
 	    this.mass  = mass;
 	    this.color = randomColour;
 	    this.stop = false;
-	    this.writeLock = writeLock;
-	    this.readLock = readLock;
-	    this.writeLatch = writeLatch;
-	    this.doneLatch = doneLatch;
+	    this.bodyStop = bodyStop;
+	    this.readBarrier = readBarrier;
+	    this.writeBarrier = writeBarrier;
 	    this.o = new P2d(0,0);
 	}
 
@@ -49,6 +49,7 @@ public class Body extends Thread {
 		vel.y += dt * fy / mass;
 		pos.x += (vel.x + ((dt * fx / mass) /2)) * dt;
 		pos.y += (vel.y + ((dt * fy / mass) /2)) * dt;
+		System.out.println(p+" - Vel("+vel.x+", "+vel.y+"); Pos("+pos.x+", "+pos.y+") - Massa: "+mass);
 	  }
 	
     public P2d getPos(){
@@ -64,8 +65,8 @@ public class Body extends Thread {
     		try {
     			
     			//Semaforo che aspetta la lettura, e viene sbloccato dall'universe con un signalAll(ndbody)
-				readLock.acquire();
-				
+    			bodyStop.acquire();
+    			
 				double tempfx = 0;
 				double tempfy = 0;
 				
@@ -77,17 +78,17 @@ public class Body extends Thread {
 	        			tempfy = tempfy + ((G * bodies.get(j).mass * this.mass)/(Math.pow((bodies.get(j).pos.y+this.pos.y), 2)));
 	        		}
 	        	}
-	    		//Questo latch viene decrementato per ogni body, perchè quando il valore sarà 0 allora l'universe sbloccherà il semaforo writeLock per
+	    		//Questo latch viene decrementato per ogni body, perch�� quando il valore sar�� 0 allora l'universe sbloccher�� il semaforo writeLock per
 	    		//fare partire la scrittura concorrente
-	    		writeLatch.countDown();
 	    		System.out.println(p+" Ho fatto la lettura aspetto per scrivere");
-	    		writeLock.acquire();
+	    		readBarrier.await();
+	    		
 	    		System.out.println(p+" Sto scrivendo");
 	        	update(tempfx,tempfy);
-	        	doneLatch.countDown();
+	        	writeBarrier.await();
 	        	System.out.println(p+" Ho scritto");
 	        	
-			} catch (InterruptedException e) {
+			} catch (InterruptedException | BrokenBarrierException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}

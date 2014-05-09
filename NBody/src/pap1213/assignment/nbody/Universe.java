@@ -1,7 +1,9 @@
 package pap1213.assignment.nbody;
 
 import java.util.ArrayList;
+import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.CyclicBarrier;
 import java.util.concurrent.Semaphore;
 
 import javax.rmi.CORBA.Util;
@@ -13,10 +15,9 @@ public class Universe extends Thread {
     private UniverseFrame frame;
     private Context context;
     private int nBody;
-	private Semaphore writeLock;
-	private Semaphore readLock;
-	private CountDownLatch writeLatch;
-	private CountDownLatch doneLatch;
+    private Semaphore bodyStop;
+	private CyclicBarrier writeBarrier;
+	private CyclicBarrier readBarrier;
 	private ArrayList<Body> bodies;
 	private P2d[] pos;
 	private int cores;
@@ -31,12 +32,11 @@ public class Universe extends Thread {
         System.out.println("Numero dei cores: "+cores);
    }
    
-    public void setSemaphore (Semaphore writeLock,Semaphore readLock,CountDownLatch writeLatch,CountDownLatch doneLatch)
+    public void setSemaphore (Semaphore bodyStop, CyclicBarrier readBarrier, CyclicBarrier writeBarrier)
     {
-	    this.writeLock = writeLock;
-	    this.readLock = readLock;
-	    this.writeLatch = writeLatch;
-	    this.doneLatch = doneLatch;
+	    this.bodyStop = bodyStop;
+	    this.readBarrier = readBarrier;
+	    this.writeBarrier = writeBarrier;
     }
     
     public void setNBody (int nBody)
@@ -74,13 +74,17 @@ public class Universe extends Thread {
     		}
         	System.out.println("Fine Start corpi");
             try {
+            	readBarrier.reset();
+            	writeBarrier.reset();
+            	
             	frame.updatePosition(getPositions());
-                readLock.release(nBody);
-				writeLatch.await();
-				writeLock.release(nBody);
-				doneLatch.await();
-				//Qui bisogna risettare i latch, oppure usare una cosa diversa tipo una CyclicBarrier
-			} catch (InterruptedException e) {
+                
+            	bodyStop.release(nBody);
+            
+				writeBarrier.await();
+			
+			//Qui bisogna risettare i latch, oppure usare una cosa diversa tipo una CyclicBarrier
+			} catch (InterruptedException | BrokenBarrierException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
