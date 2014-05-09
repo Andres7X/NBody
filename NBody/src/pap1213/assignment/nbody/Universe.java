@@ -22,6 +22,8 @@ public class Universe extends Thread {
 	private P2d[] pos;
 	private int cores;
 	
+	//cacca
+	
 	
     public Universe(){
         stop = false;

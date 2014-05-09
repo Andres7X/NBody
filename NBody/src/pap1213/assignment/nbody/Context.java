@@ -15,7 +15,8 @@ public class Context {
 	private CyclicBarrier writeBarrier;
 	private CyclicBarrier readBarrier;
 	private P2d[] pos;
-
+//pupu
+	
 	public Context ()
 	{
 		universe = new Universe();

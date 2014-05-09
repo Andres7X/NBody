@@ -11,6 +11,7 @@ public class Body extends Thread {
 	private static final double G = 6.673e-11;   // gravitational constant
 	private static final double dt = 20;
 	//private static final double solarmass=1.98892e30;
+	//culo
 	
 	private P2d pos; 		  // cartesian positions
 	private V2d vel;       	 // velocity 
