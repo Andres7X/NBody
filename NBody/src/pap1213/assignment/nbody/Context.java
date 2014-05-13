@@ -27,7 +27,7 @@ public class Context {
 			//Random Position
 			Random rand = new Random(System.currentTimeMillis()+i);
 			//perch�� tra 590 e 570??
-			P2d pos = new P2d(rand.nextInt(1190),rand.nextInt(870));
+			P2d pos = new P2d(rand.nextInt(1190),rand.nextInt(670));
 			//System.out.println("X: "+pos.x+" Y: "+pos.y);
 			//creo dx da un generatore random e lo moltiplico per il segno di un intero che mi restituisce
 			//il generatore perch�� sembra che con i double non ne dia mai con segno negativo
