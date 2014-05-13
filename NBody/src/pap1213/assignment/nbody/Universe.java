@@ -1,61 +1,49 @@
 package pap1213.assignment.nbody;
 
 import java.util.ArrayList;
-import java.util.concurrent.BrokenBarrierException;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.CyclicBarrier;
-import java.util.concurrent.Semaphore;
-
-import javax.rmi.CORBA.Util;
+import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class Universe extends Thread {
 
-	private boolean stop;
-	private boolean isFirstTime;
+	private AtomicBoolean stop;
+	private AtomicBoolean pause;
+	private AtomicBoolean singleStep;
+	
     private UniverseFrame frame;
-    private Context context;
-    private int nBody;
-    private Semaphore bodyStop;
-	private CyclicBarrier writeBarrier;
-	private CyclicBarrier readBarrier;
 	private ArrayList<Body> bodies;
 	private P2d[] pos;
 	private int cores;
-	
-	//cacca
-	
+	private ExecutorService executor;
+	private long lastTime;
+	private double fps;
 	
     public Universe(){
-        stop = false;
-        isFirstTime = true;
+        stop = new AtomicBoolean(false);
+        pause = new AtomicBoolean(true);
+        singleStep = new AtomicBoolean(false);
+        
         frame = new UniverseFrame();
         frame.setVisible(true);
-        cores = Runtime.getRuntime().availableProcessors();
+        cores = Runtime.getRuntime().availableProcessors() + 1;
         System.out.println("Numero dei cores: "+cores);
+        executor = Executors.newFixedThreadPool(cores);
+        
    }
-   
-    public void setSemaphore (Semaphore bodyStop, CyclicBarrier readBarrier, CyclicBarrier writeBarrier)
-    {
-	    this.bodyStop = bodyStop;
-	    this.readBarrier = readBarrier;
-	    this.writeBarrier = writeBarrier;
-    }
-    
-    public void setNBody (int nBody)
-    {
-    	this.nBody = nBody;
-    }
     
     public void setBodies(ArrayList<Body> bodies) {
 		this.bodies = bodies;
 	}
     
     public P2d[] getPositions(){
-    	for(int i = 0; i<nBody; i++){
+    	for(int i = 0; i<bodies.size(); i++){
     		pos[i] = bodies.get(i).getPos();
-    		System.out.println("Il corpo "+i+" ha posizione: ("+pos[i].x+", "+pos[i].y+")");
+    		//System.out.println("Il corpo "+i+" ha posizione: ("+pos[i].x+", "+pos[i].y+")");
     	}
-    	System.out.println("Ciclo finito");
+    	//System.out.println("Ciclo finito");
     	return pos;
     }
     
@@ -63,41 +51,62 @@ public class Universe extends Thread {
     	this.pos = p;
     }
     
+    public void start_pressed()
+    {
+    	System.out.println("start premuto");
+    	pause.set(false);
+    	singleStep.set(false);
+    }
+    
+    public void pause_pressed()
+    {
+    	pause.set(true);
+    	singleStep.set(false);
+    }
+    
+    public void singleStep_pressed()
+    {
+    	pause.set(true);
+    	singleStep.set(true);
+    }
+    
+    public void stop_pressed()
+    {
+    	stop.set(true);
+    	pause.set(true);
+    	singleStep.set(false);
+    	frame.setVisible(false);
+    	frame.dispose();
+    }
+    
+    public void printBody()
+    {
+    	frame.updatePosition(getPositions());
+    }
     
     public void run(){
-        while (!stop) {
-        	
-        	//*** Faccio partire tutti i corpi, o devono partire prima dell'universe? forsee ha piu' senso farli partire direttamente nel ciclo sopra dopo averli aggiunti all'array
-    		if(isFirstTime){
-    			isFirstTime=false;
-    			for (int i=0; i<nBody; i++){
-    				bodies.get(i).start();
-    			}
-    		}
-        	System.out.println("Fine Start corpi");
-            try {
-            	readBarrier.reset();
-            	writeBarrier.reset();
-            	
-            	frame.updatePosition(getPositions());
+        while (!stop.get()) {
+        	//System.out.println("");
+        	if (!pause.get() || singleStep.get())
+        	{
+        		lastTime = System.nanoTime();
+                try {
+                	List<Future<BodyInfo>> list = executor.invokeAll(bodies);
+                	for (Future<BodyInfo> future : list){
+                		BodyInfo temp = future.get();
+                		bodies.get(temp.index).update(temp.position, temp.velocity, temp.fx, temp.fy);
+                	}
+
+                	frame.updatePosition(getPositions());
+                    Thread.sleep(20);     
+                } catch (Exception ex){
+                }
                 
-            	bodyStop.release(nBody);
-            
-				writeBarrier.await();
-			
-			//Qui bisogna risettare i latch, oppure usare una cosa diversa tipo una CyclicBarrier
-			} catch (InterruptedException | BrokenBarrierException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-            
-            
-            //Faccio leggere le nuove posizioni
-            
-            try {
-                Thread.sleep(20);     
-            } catch (Exception ex){
-            }
+                singleStep.set(false);
+                
+                fps = 1000000000.0 / (System.nanoTime() - lastTime);
+                System.out.println(fps);
+        	}
         }
     }
 }

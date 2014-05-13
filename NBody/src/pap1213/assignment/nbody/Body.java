@@ -1,56 +1,49 @@
 package pap1213.assignment.nbody;
 import java.awt.Color;
 import java.util.ArrayList;
-import java.util.concurrent.BrokenBarrierException;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.CyclicBarrier;
-import java.util.concurrent.Semaphore;
+import java.util.concurrent.Callable;
 
-public class Body extends Thread {
+public class Body implements Callable<BodyInfo> {
 
 	private static final double G = 6.673e-11;   // gravitational constant
 	private static final double dt = 20;
 	//private static final double solarmass=1.98892e30;
-	//culo
+
 	
 	private P2d pos; 		  // cartesian positions
 	private V2d vel;       	 // velocity 
 	public double fx, fy; 	// force
 	public double mass;    // mass
 	public Color color;   // color
-	private boolean stop;
 	private int p;
 	private ArrayList<Body> bodies;
 	private P2d o;
 	
-    private Semaphore bodyStop;
-	private CyclicBarrier writeBarrier;
-	private CyclicBarrier readBarrier;
-	
 	// create and initialize a new Body
-	public Body(int p, ArrayList<Body> bodies, P2d pos, V2d vel, int mass, Color randomColour,Semaphore bodyStop, CyclicBarrier readBarrier, CyclicBarrier writeBarrier) {
+	public Body(int p, ArrayList<Body> bodies, P2d pos, V2d vel, int mass, Color randomColour) {
 		this.p = p;
 		this.bodies = bodies;
 		this.pos = new P2d(pos.x,pos.y);
 		this.vel = new V2d(vel.x,vel.y);
 	    this.mass  = mass;
 	    this.color = randomColour;
-	    this.stop = false;
-	    this.bodyStop = bodyStop;
-	    this.readBarrier = readBarrier;
-	    this.writeBarrier = writeBarrier;
 	    this.o = new P2d(0,0);
 	}
 
 	// update the velocity and position using a timestep dt
-	public void update(double tempfx,double tempfy) {
-		fx = tempfx;
-		fy = tempfy;
-		vel.x += dt * fx / mass;
+	public void update(P2d new_pos, V2d new_vel,double new_fx,double new_fy) {
+		fx = new_fx;
+		fy = new_fy;
+		pos.x = new_pos.x;
+		pos.y = new_pos.y;
+		vel.x = new_vel.x;
+		vel.y = new_vel.y;
+		/*vel.x += dt * fx / mass;
 		vel.y += dt * fy / mass;
 		pos.x += (vel.x + ((dt * fx / mass) /2)) * dt;
 		pos.y += (vel.y + ((dt * fy / mass) /2)) * dt;
 		System.out.println(p+" - Vel("+vel.x+", "+vel.y+"); Pos("+pos.x+", "+pos.y+") - Massa: "+mass);
+		*/
 	  }
 	
     public P2d getPos(){
@@ -59,40 +52,31 @@ public class Body extends Thread {
     	return o;
     }
     
-    public void run(){
-    	
-    	while (!stop) {
-        
-    		try {
-    			
-    			//Semaforo che aspetta la lettura, e viene sbloccato dall'universe con un signalAll(ndbody)
-    			bodyStop.acquire();
-    			
-				double tempfx = 0;
-				double tempfy = 0;
-				
-	    		for (int j = 0; j< bodies.size(); j++)
-	        	{
-	        		if (j != p)
-	        		{
-	        			tempfx = tempfx + ((G * bodies.get(j).mass * this.mass)/(Math.pow((bodies.get(j).pos.x+this.pos.x), 2)));
-	        			tempfy = tempfy + ((G * bodies.get(j).mass * this.mass)/(Math.pow((bodies.get(j).pos.y+this.pos.y), 2)));
-	        		}
-	        	}
-	    		//Questo latch viene decrementato per ogni body, perch�� quando il valore sar�� 0 allora l'universe sbloccher�� il semaforo writeLock per
-	    		//fare partire la scrittura concorrente
-	    		System.out.println(p+" Ho fatto la lettura aspetto per scrivere");
-	    		readBarrier.await();
-	    		
-	    		System.out.println(p+" Sto scrivendo");
-	        	update(tempfx,tempfy);
-	        	writeBarrier.await();
-	        	System.out.println(p+" Ho scritto");
-	        	
-			} catch (InterruptedException | BrokenBarrierException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+	@Override
+	public BodyInfo call() throws Exception {
+		//System.out.println("Calcolo il nuovo valore del body: "+p);
+		double future_fx = 0;
+		double future_fy = 0;
+		
+		for (int j = 0; j< bodies.size(); j++)
+    	{
+    		if (j != p)
+    		{
+    			future_fx = future_fx + ((G * bodies.get(j).mass * this.mass)/(Math.pow((bodies.get(j).pos.x+this.pos.x), 2)));
+    			future_fy = future_fy + ((G * bodies.get(j).mass * this.mass)/(Math.pow((bodies.get(j).pos.y+this.pos.y), 2)));
+    		}
     	}
-    }
+		
+		//update(tempfx,tempfy);
+		double future_vel_x = vel.x + dt * future_fx / mass;
+		double future_vel_y = vel.y + dt * future_fy / mass;
+		double future_pos_x = pos.x + (future_vel_x + ((dt * future_fx / mass) /2)) * dt;
+		double future_pos_y = pos.y + (future_vel_y + ((dt * future_fy / mass) /2)) * dt;
+		
+		P2d future_pos = new P2d(future_pos_x, future_pos_y);
+		V2d future_vel = new V2d(future_vel_x, future_vel_y);
+		
+		BodyInfo future_body = new BodyInfo(future_pos, future_vel, future_fx, future_fy,p);
+		return future_body;
+	}
 }

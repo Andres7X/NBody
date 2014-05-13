@@ -18,6 +18,8 @@ public class ControlPanel extends JFrame implements ActionListener {
     private JButton buttonStop;
     private JButton buttonPause;
     private JButton buttonSingleStep;
+    private JButton buttonCreateBody;
+    private JButton buttonResetBody;
     private JRadioButton radioRandom;
     private JRadioButton radioFile;
     private JFormattedTextField bodyNumber;
@@ -47,6 +49,15 @@ public class ControlPanel extends JFrame implements ActionListener {
         buttonStop = new JButton("Stop");
         buttonPause = new JButton("Pause");
         buttonSingleStep = new JButton("Single Step");
+        
+        buttonStart.setEnabled(false);
+        buttonStop.setEnabled(false);
+        buttonPause.setEnabled(false);
+        buttonSingleStep.setEnabled(false);
+        
+        buttonCreateBody = new JButton("Create");
+        buttonResetBody = new JButton("Reset");
+        
         fc = new JFileChooser();
         FileNameExtensionFilter filter = new FileNameExtensionFilter("TEXT FILES", "txt", "text");
         fc.setFileFilter(filter);
@@ -54,13 +65,16 @@ public class ControlPanel extends JFrame implements ActionListener {
         JPanel p = new JPanel();
         //p.setLayout(new GridBagLayout());
         p.add(buttonStart);
-        p.add(buttonStop);
         p.add(buttonPause);
         p.add(buttonSingleStep);
+        p.add(buttonStop);
+        
         buttonStart.addActionListener(this);
         buttonStop.addActionListener(this);
         buttonPause.addActionListener(this);
         buttonSingleStep.addActionListener(this);
+        buttonCreateBody.addActionListener(this);
+        buttonResetBody.addActionListener(this);
         
         radioRandom = new JRadioButton("Random");
         radioFile = new JRadioButton("Select File");
@@ -88,6 +102,8 @@ public class ControlPanel extends JFrame implements ActionListener {
         p3.setLayout(new GridBagLayout());
         p3.add(amountLabel);
         p3.add(bodyNumber);
+        p3.add(buttonCreateBody);
+        p3.add(buttonResetBody);
         
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
@@ -114,12 +130,16 @@ public class ControlPanel extends JFrame implements ActionListener {
         	}
         } else if (src==buttonStop){
         	System.out.println("Stop button");
+        	stopUniverse();
         } else if (src == buttonPause)
         {
         	System.out.println("Pause button");
+        	pauseUniverse();
+        	
         } else if (src == buttonSingleStep)
         {
         	System.out.println("Single Step button");
+        	singleStepUniverse();
         } else if (src == buttonLoadFile)
         {
         	System.out.println("Load File button");
@@ -160,16 +180,61 @@ public class ControlPanel extends JFrame implements ActionListener {
         {
         	System.out.println("File Radio Pressed");
         	selectFileRadio();
+        } else if (src == buttonCreateBody)
+        {
+        	System.out.println("Create Body Pressed");
+        	createRandomBody();
+        } else if (src == buttonResetBody)
+        {
+        	System.out.println("Reset Body Pressed");
         }
 	}
 	
-	public void startUniverse()
+	public void createRandomBody()
 	{
 		if (radioRandom.isSelected())
 		{
 			context.generateRandomBodyWithNumber(Integer.parseInt(bodyNumber.getText()));
-			
+			buttonCreateBody.setEnabled(false);
+			buttonResetBody.setEnabled(false);
+			radioRandom.setEnabled(false);
+			radioFile.setEnabled(false);
+			bodyNumber.setEditable(false);
 		}
+		
+        buttonStart.setEnabled(true);
+        buttonStop.setEnabled(true);
+        buttonPause.setEnabled(true);
+        buttonSingleStep.setEnabled(true);
+	}
+	
+	public void startUniverse()
+	{
+		context.start_pressed();
+	}
+	
+	public void pauseUniverse()
+	{
+		context.pause_pressed();
+	}
+	
+	public void singleStepUniverse()
+	{
+		context.singleStep_pressed();
+	}
+	
+	public void stopUniverse()
+	{
+		context.stop_pressed();
+        buttonStart.setEnabled(false);
+        buttonStop.setEnabled(false);
+        buttonPause.setEnabled(false);
+        buttonSingleStep.setEnabled(false);
+		buttonCreateBody.setEnabled(true);
+		buttonResetBody.setEnabled(true);
+		radioRandom.setEnabled(true);
+		radioFile.setEnabled(true);
+		bodyNumber.setEditable(true);
 	}
 	
 	public void randomPressed()
@@ -177,7 +242,7 @@ public class ControlPanel extends JFrame implements ActionListener {
 		buttonLoadFile.setEnabled(false);
 		amountLabel.setEnabled(true);
 		bodyNumber.setEnabled(true);
-		int n_body = randInt(2,100);
+		int n_body = randInt(2,1000);
 		bodyNumber.setText(Integer.toString(n_body));
 	}
 	
