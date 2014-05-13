@@ -21,7 +21,7 @@ public class Universe extends Thread {
 	private long lastTime;
 	private double fps;
 	
-    public Universe(){
+    public Universe(int nbody){
         stop = new AtomicBoolean(false);
         pause = new AtomicBoolean(true);
         singleStep = new AtomicBoolean(false);
@@ -31,6 +31,8 @@ public class Universe extends Thread {
         cores = Runtime.getRuntime().availableProcessors() + 1;
         System.out.println("Numero dei cores: "+cores);
         executor = Executors.newFixedThreadPool(cores);
+        
+        pos = new P2d[nbody];
         
    }
     

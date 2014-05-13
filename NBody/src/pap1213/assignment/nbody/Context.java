@@ -8,7 +8,6 @@ public class Context {
 	
 	private ArrayList<Body> bodies;
 	private Universe universe;
-	private P2d[] pos;
 	
 	public Context ()
 	{
@@ -19,7 +18,7 @@ public class Context {
 	{
 		//Ogni volta pulisco l'array con i corpi
 		bodies.clear();
-		universe = new Universe();
+		universe = new Universe(nbody);
 		
 		//System.out.println("creo corpi random...");
 		for (int i = 0; i<nbody; i++)
@@ -28,13 +27,13 @@ public class Context {
 			//Random Position
 			Random rand = new Random(System.currentTimeMillis()+i);
 			//perch�� tra 590 e 570??
-			P2d pos = new P2d(rand.nextInt(590),rand.nextInt(570));
+			P2d pos = new P2d(rand.nextInt(1190),rand.nextInt(870));
 			//System.out.println("X: "+pos.x+" Y: "+pos.y);
 			//creo dx da un generatore random e lo moltiplico per il segno di un intero che mi restituisce
 			//il generatore perch�� sembra che con i double non ne dia mai con segno negativo
 	        double dx = rand.nextDouble()*Math.signum(rand.nextInt());
 	        V2d vel = new V2d(dx,Math.sqrt(1-dx*dx));
-	        //System.out.println("Vel x: "+vel.x+" Vel y: "+vel.y);
+	        System.out.println("Vel x: "+vel.x+" Vel y: "+vel.y);
 	        //metto abs perch�� voglio le masse sempre positive
 	        int mass = Math.abs(rand.nextInt());
 	        //bounds = ctx.getBounds();
@@ -54,9 +53,7 @@ public class Context {
 		//*** e' meglio mettere la variabile di default a true e quando si crea l'universo fare partire start direttamente
 		//e poi usare la variabile stop per fermare e fare partire il thread
 		universe.setBodies(bodies);
-		pos = new P2d[nbody];
-		pos = getPositions();
-		universe.setPos(pos);
+
 		universe.printBody();
 		universe.start();
 	}
@@ -85,13 +82,5 @@ public class Context {
 	{
 		return bodies.size();
 	}
-	
-	public P2d[] getPositions(){
-        P2d[] array = new P2d[bodies.size()];
-        for (int i=0; i<array.length; i++){
-            array[i] = ((Body)bodies.get(i)).getPos();
-        }
-        return array;
-    }
 	
 }

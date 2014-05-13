@@ -15,7 +15,7 @@ public class UniverseFrame extends JFrame {
 	
 	public UniverseFrame(){
         setTitle("N-Body");
-        setSize(600,600);
+        setSize(1200,900);
         setResizable(false);
         panel = new UniversePanel();
         getContentPane().add(panel);
@@ -35,17 +35,17 @@ public class UniverseFrame extends JFrame {
 		private P2d[] positions;
 		
 		public UniversePanel(){
-            setSize(600,600);
+            setSize(900,750);
         }
 		
 		public void paintComponent(Graphics g) {
             super.paintComponent(g);
-
-            g.clearRect(0, 0, 600, 600);
+            System.out.println("Disegno");
+            g.clearRect(0, 0, 1200,900);
             Color prevColor = g.getColor();
 
             g.setColor(Color.BLACK); // background color
-            g.fillRect(0, 0, 600, 600); // fill a rectangle with background color
+            g.fillRect(0, 0, 1200,900); // fill a rectangle with background color
             g.setColor(prevColor);
 
             synchronized (this){
