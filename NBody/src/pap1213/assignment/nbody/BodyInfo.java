@@ -6,14 +6,16 @@ public class BodyInfo {
 	V2d velocity;
 	double fx;
 	double fy;
+	double mass;
 	int index;
 	
-	public BodyInfo (P2d position, V2d velocity, double fx, double fy,int index)
+	public BodyInfo (P2d position, V2d velocity, double fx, double fy, double mass,int index)
 	{
 		this.position = position;
 		this.velocity = velocity;
 		this.fx = fx;
 		this.fy = fy;
+		this.mass = mass;
 		this.index = index;
 	}
 }

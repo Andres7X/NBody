@@ -23,19 +23,22 @@ public class Context {
 		//System.out.println("creo corpi random...");
 		for (int i = 0; i<nbody; i++)
 		{
-			//System.out.println("Creo corpo: "+i);
-			//Random Position
-			Random rand = new Random(System.currentTimeMillis()+i);
+			
+			//Random velocità vogliamo un tetto massimo di 50.000m/s (che può essere positivo o negativo) quindi 
+			//mettiamo un tetto massimo di 100.000 m/s e togliamo ogni volta la metà del tetto al numero random es:
+			//random con Math.random() genera un numero tra 0 e 1.0 * 100.000 - 50.000
+			Random rand = new Random(System.nanoTime()+i);
 			//perch�� tra 590 e 570??
 			P2d pos = new P2d(rand.nextInt(1190),rand.nextInt(670));
 			//System.out.println("X: "+pos.x+" Y: "+pos.y);
 			//creo dx da un generatore random e lo moltiplico per il segno di un intero che mi restituisce
 			//il generatore perch�� sembra che con i double non ne dia mai con segno negativo
-	        double dx = rand.nextDouble()*Math.signum(rand.nextInt());
-	        V2d vel = new V2d(dx,Math.sqrt(1-dx*dx));
+	        double vx = ((Math.random()*20)-10);
+	        double vy = ((Math.random()*20)-10);
+	        V2d vel = new V2d(vx,vy);
 	        System.out.println("Vel x: "+vel.x+" Vel y: "+vel.y);
 	        //metto abs perch�� voglio le masse sempre positive
-	        int mass = Math.abs(rand.nextInt());
+	        double mass = Math.random()*10e9;
 	        //bounds = ctx.getBounds();
 //	        Random randomGenerator = new Random();
 //	        int red = randomGenerator.nextInt(255);
@@ -63,11 +66,26 @@ public class Context {
 		bodies.clear();
 		universe = new Universe(nbody);
 		
+		int i = 0;
 		//creo l'arraylist con i corpi letti dal file
 		for(BodyInfoFromFile agent:bodiesFromFile){
-			Color bodyColour = Color.WHITE;
+			
+			Color bodyColour = null;
+			switch (i) {
+			case 0:
+				bodyColour = Color.WHITE;
+				break;
+			case 1:
+				bodyColour = Color.YELLOW;
+				break;
+			case 2:
+				bodyColour = Color.RED;
+				break;
+			}
+			 
 			Body body = new Body(agent.index, bodies, agent.position, agent.velocity, agent.mass, bodyColour);
 			bodies.add(body);
+			i++;
 		}
 		universe.setBodies(bodies);
 

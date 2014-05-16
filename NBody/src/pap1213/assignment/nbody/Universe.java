@@ -83,7 +83,7 @@ public class Universe extends Thread {
     
     public void printBody()
     {
-    	frame.updatePosition(getPositions());
+    	frame.updateBodies(bodies);
     }
     
     public void run(){
@@ -96,11 +96,11 @@ public class Universe extends Thread {
                 	List<Future<BodyInfo>> list = executor.invokeAll(bodies);
                 	for (Future<BodyInfo> future : list){
                 		BodyInfo temp = future.get();
-                		System.out.println("Pos x: "+temp.position.x+" Pos y: "+temp.position.y+" Vel x: "+temp.velocity.x+" Vel y: "+temp.velocity.y);
+                		System.out.println(temp.index+" Pos x: "+temp.position.x+" Pos y: "+temp.position.y+" Vel x: "+temp.velocity.x+" Vel y: "+temp.velocity.y+" Massa: "+temp.mass);
                 		bodies.get(temp.index).update(temp.position, temp.velocity, temp.fx, temp.fy);
                 	}
 
-                	frame.updatePosition(getPositions());
+                	frame.updateBodies(bodies);
                     Thread.sleep(20);     
                 } catch (Exception ex){
                 }

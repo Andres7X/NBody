@@ -2,6 +2,7 @@ package pap1213.assignment.nbody;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.util.ArrayList;
 
 import javax.swing.*;
 
@@ -22,8 +23,8 @@ public class UniverseFrame extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
 	
-	public void updatePosition(P2d[] pos){
-        panel.updatePositions(pos);
+	public void updateBodies(ArrayList<Body> bodies){
+        panel.updateBodies(bodies);
     }
 	
 	public static class UniversePanel extends JPanel {
@@ -32,7 +33,7 @@ public class UniverseFrame extends JFrame {
 		 * 
 		 */
 		private static final long serialVersionUID = 1L;
-		private P2d[] positions;
+		private ArrayList<Body> bodies;
 		
 		public UniversePanel(){
             setSize(900,700);
@@ -49,11 +50,11 @@ public class UniverseFrame extends JFrame {
             g.setColor(prevColor);
 
             synchronized (this){
-	            if (positions!=null){
-	                for (int i=0; i<positions.length; i++){
-		                P2d p = positions[i];
+	            if (bodies!=null){
+	                for (int i=0; i<bodies.size(); i++){
+		                P2d p = bodies.get(i).getPos();
 		                g.drawOval((int)p.x,(int)p.y,5,5);
-		                g.setColor(Color.WHITE); // background color
+		                g.setColor(bodies.get(i).color); // background color
 		                g.fillOval((int)p.x,(int)p.y, 5, 5);
 		            }
 	            }
@@ -67,9 +68,9 @@ public class UniverseFrame extends JFrame {
             
         }*/
         
-        public void updatePositions(P2d[] pos){
+        public void updateBodies(ArrayList<Body> bodies){
             synchronized(this){
-                positions = pos;
+                this.bodies = bodies;
             }
             repaint();
         }

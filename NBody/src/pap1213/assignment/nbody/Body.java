@@ -20,7 +20,7 @@ public class Body implements Callable<BodyInfo> {
 	private P2d o;
 	
 	// create and initialize a new Body
-	public Body(int p, ArrayList<Body> bodies, P2d pos, V2d vel, int mass, Color randomColour) {
+	public Body(int p, ArrayList<Body> bodies, P2d pos, V2d vel, double mass, Color randomColour) {
 		this.p = p;
 		this.bodies = bodies;
 		this.pos = new P2d(pos.x,pos.y);
@@ -80,7 +80,7 @@ public class Body implements Callable<BodyInfo> {
 		P2d future_pos = new P2d(future_pos_x, future_pos_y);
 		V2d future_vel = new V2d(future_vel_x, future_vel_y);
 		
-		BodyInfo future_body = new BodyInfo(future_pos, future_vel, future_fx, future_fy,p);
+		BodyInfo future_body = new BodyInfo(future_pos, future_vel, future_fx, future_fy,mass,p);
 		return future_body;
 	}
 }
