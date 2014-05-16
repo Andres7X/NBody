@@ -6,7 +6,7 @@ import java.util.concurrent.Callable;
 public class Body implements Callable<BodyInfo> {
 
 	private static final double G = 6.673e-11;   // gravitational constant
-	private static final double dt = 20;
+	private static final double dt = 20*0.001;
 	//private static final double solarmass=1.98892e30;
 
 	
@@ -59,19 +59,23 @@ public class Body implements Callable<BodyInfo> {
 		double future_fy = 0;
 		
 		for (int j = 0; j< bodies.size(); j++)
-    	{
+    	{	
     		if (j != p)
     		{
-    			future_fx = future_fx + ((G * bodies.get(j).mass * this.mass)/(Math.pow((bodies.get(j).pos.x+this.pos.x), 2)));
-    			future_fy = future_fy + ((G * bodies.get(j).mass * this.mass)/(Math.pow((bodies.get(j).pos.y+this.pos.y), 2)));
+    			double dx = (bodies.get(j).pos.x-this.pos.x);
+    			double dy = (bodies.get(j).pos.y-this.pos.y);
+    			double dist = Math.sqrt(dx*dx + dy*dy);
+    			double f = (G*bodies.get(j).mass * this.mass)/(dist*dist);
+    			
+    			future_fx = future_fx + ((f * dx)/dist);
+    			future_fy = future_fy + ((f * dy)/dist);
     		}
     	}
 		
-		//update(tempfx,tempfy);
-		double future_vel_x = vel.x + dt * future_fx / mass;
-		double future_vel_y = vel.y + dt * future_fy / mass;
-		double future_pos_x = pos.x + (future_vel_x + ((dt * future_fx / mass) /2)) * dt;
-		double future_pos_y = pos.y + (future_vel_y + ((dt * future_fy / mass) /2)) * dt;
+		double future_vel_x = vel.x + (dt * future_fx) / mass;
+		double future_vel_y = vel.y + (dt * future_fy) / mass;
+		double future_pos_x = pos.x + (dt * future_vel_x);
+		double future_pos_y = pos.y + (dt * future_vel_y);
 		
 		P2d future_pos = new P2d(future_pos_x, future_pos_y);
 		V2d future_vel = new V2d(future_vel_x, future_vel_y);

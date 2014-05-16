@@ -96,6 +96,7 @@ public class Universe extends Thread {
                 	List<Future<BodyInfo>> list = executor.invokeAll(bodies);
                 	for (Future<BodyInfo> future : list){
                 		BodyInfo temp = future.get();
+                		System.out.println("Pos x: "+temp.position.x+" Pos y: "+temp.position.y+" Vel x: "+temp.velocity.x+" Vel y: "+temp.velocity.y);
                 		bodies.get(temp.index).update(temp.position, temp.velocity, temp.fx, temp.fy);
                 	}
 

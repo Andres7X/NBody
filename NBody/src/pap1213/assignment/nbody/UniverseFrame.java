@@ -52,8 +52,6 @@ public class UniverseFrame extends JFrame {
 	            if (positions!=null){
 	                for (int i=0; i<positions.length; i++){
 		                P2d p = positions[i];
-		                //int x0 = (int)(180+p.x*180);
-		                //int y0 = (int)(180-p.y*180);
 		                g.drawOval((int)p.x,(int)p.y,5,5);
 		                g.setColor(Color.WHITE); // background color
 		                g.fillOval((int)p.x,(int)p.y, 5, 5);
