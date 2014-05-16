@@ -5,7 +5,7 @@ import java.util.concurrent.Callable;
 
 public class Body implements Callable<BodyInfo> {
 
-	private static final double G = 6.673;   // gravitational constant
+	private static final double G = Math.pow(6.674*10,11);   // gravitational constant
 	private static final double dt = 20*0.001;
 	//private static final double solarmass=1.98892e30;
 

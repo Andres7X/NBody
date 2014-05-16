@@ -33,8 +33,8 @@ public class Context {
 			//System.out.println("X: "+pos.x+" Y: "+pos.y);
 			//creo dx da un generatore random e lo moltiplico per il segno di un intero che mi restituisce
 			//il generatore perch�� sembra che con i double non ne dia mai con segno negativo
-	        double vx = ((Math.random()*20)-10);
-	        double vy = ((Math.random()*20)-10);
+	        double vx = ((Math.random()*3000)-1500);
+	        double vy = ((Math.random()*3000)-1500);
 	        V2d vel = new V2d(vx,vy);
 	        System.out.println("Vel x: "+vel.x+" Vel y: "+vel.y);
 	        //metto abs perch�� voglio le masse sempre positive
