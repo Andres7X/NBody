@@ -101,7 +101,7 @@ public class Universe extends Thread {
                 	}
 
                 	frame.updateBodies(bodies);
-                    //???Thread.sleep(20);     
+                    Thread.sleep(20);     
                 } catch (Exception ex){
                 }
                 
