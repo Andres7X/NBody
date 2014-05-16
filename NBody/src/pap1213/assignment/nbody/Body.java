@@ -57,16 +57,16 @@ public class Body implements Callable<BodyInfo> {
 		//System.out.println("Calcolo il nuovo valore del body: "+p);
 		double future_fx = 0;
 		double future_fy = 0;
-		
+		System.out.println("Numero totale corpi: "+bodies.size());
 		for (int j = 0; j< bodies.size(); j++)
     	{	
-    		if (j != p)
+    		if (bodies.get(j).p != p)
     		{
     			double dx = (bodies.get(j).pos.x-this.pos.x);
     			double dy = (bodies.get(j).pos.y-this.pos.y);
     			double dist = Math.sqrt(dx*dx + dy*dy);
     			double f = (G*bodies.get(j).mass * this.mass)/(dist*dist);
-    			
+    			System.out.println(p +"Forza: "+f);
     			future_fx = future_fx + ((f * dx)/dist);
     			future_fy = future_fy + ((f * dy)/dist);
     		}
