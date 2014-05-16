@@ -37,11 +37,11 @@ public class Context {
 	        //metto abs perch�� voglio le masse sempre positive
 	        int mass = Math.abs(rand.nextInt());
 	        //bounds = ctx.getBounds();
-	        Random randomGenerator = new Random();
-	        int red = randomGenerator.nextInt(255);
-	        int green = randomGenerator.nextInt(255);
-	        int blue = randomGenerator.nextInt(255);
-	        Color randomColour = new Color(red,green,blue);
+//	        Random randomGenerator = new Random();
+//	        int red = randomGenerator.nextInt(255);
+//	        int green = randomGenerator.nextInt(255);
+//	        int blue = randomGenerator.nextInt(255);
+//	        Color randomColour = new Color(red,green,blue);
 	        Color bodyColour = Color.WHITE;
 			Body agent = new Body(i,bodies,pos,vel,mass,bodyColour);
 	        bodies.add(agent);
@@ -52,6 +52,23 @@ public class Context {
 		//una volta creati i corpi faccio partire l'universo, ***la variabile stop di universe dobbiamo usarla?
 		//*** e' meglio mettere la variabile di default a true e quando si crea l'universo fare partire start direttamente
 		//e poi usare la variabile stop per fermare e fare partire il thread
+		universe.setBodies(bodies);
+
+		universe.printBody();
+		universe.start();
+	}
+	
+	public void generateBodyFromFile(int nbody, ArrayList<BodyInfoFromFile> bodiesFromFile){
+		//Ogni volta pulisco l'array con i corpi
+		bodies.clear();
+		universe = new Universe(nbody);
+		
+		//creo l'arraylist con i corpi letti dal file
+		for(BodyInfoFromFile agent:bodiesFromFile){
+			Color bodyColour = Color.WHITE;
+			Body body = new Body(agent.index, bodies, agent.position, agent.velocity, agent.mass, bodyColour);
+			bodies.add(body);
+		}
 		universe.setBodies(bodies);
 
 		universe.printBody();

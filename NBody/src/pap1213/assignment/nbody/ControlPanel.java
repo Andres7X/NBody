@@ -2,13 +2,22 @@ package pap1213.assignment.nbody;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.swing.text.Position;
 
 import java.awt.Dimension;
 import java.awt.GridBagLayout;
 import java.awt.Toolkit;
 import java.awt.event.*;
+import java.io.BufferedReader;
+import java.io.DataInputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.Random;
+import java.util.StringTokenizer;
 
 public class ControlPanel extends JFrame implements ActionListener {
 	
@@ -27,16 +36,32 @@ public class ControlPanel extends JFrame implements ActionListener {
     private JButton buttonLoadFile;
     private Context context;
     private JFileChooser fc;
+    private int n_body;
+    private double pos_x;
+    private double pos_y;
+    private double vel_x;
+    private double vel_y;
+    private int massa;
+    private StringTokenizer st;
+	private String string;
+	private String[] arg;
+	private String spls;
+	private P2d position;
+	private V2d velocity;
+	private int nbody;
+	private ArrayList<BodyInfoFromFile> bodiesFromFile;
+	private boolean txtFailed;
     
 	//Usare JPanel listPane = new JPanel();
     
 	public ControlPanel (Context ctx)
 	{
 		this.context = ctx ;
+		this.txtFailed = false;
         setTitle("Control Panel");
         setSize(400,200);
         setResizable(false);
-		addWindowListener(new WindowAdapter(){
+        addWindowListener(new WindowAdapter(){
 			public void windowClosing(WindowEvent ev){
 				System.exit(-1);
 			}
@@ -147,6 +172,7 @@ public class ControlPanel extends JFrame implements ActionListener {
 
             if (returnVal == JFileChooser.APPROVE_OPTION) {
                 File file = fc.getSelectedFile();
+                txtFailed = false;
                 
                 //Questo codice serve per trovare l'estensione del file
                 //Riesce a gestire anche il caso in cui ci siano dei . nel file o nella directory
@@ -162,8 +188,20 @@ public class ControlPanel extends JFrame implements ActionListener {
                 //Se e' diversa da txt non andiamo oltre
                 if (extension.equalsIgnoreCase("txt"))
                 {
+                	//creo l'arraylist con le informazioni recuperate dal file
+                	bodiesFromFile = new ArrayList<BodyInfoFromFile>();
                 	//Carichiamo il file
-                    System.out.println("Opening: " + file.getName() + " with extension: "+extension);
+                	splitFile(file);
+                	
+                	if(!txtFailed){
+                		context.generateBodyFromFile(bodiesFromFile.size(), bodiesFromFile);
+                		fileloaded();
+                		System.out.println("Opening: " + file.getName() + " with extension: "+extension);
+                	}else{
+                		System.out.println("Error in: " + file.getName() + " with extension: "+extension);
+                	}
+                	
+                    
                 } else {
                 	
                     JOptionPane.showMessageDialog(this, "No .txt file choosen.");
@@ -190,6 +228,16 @@ public class ControlPanel extends JFrame implements ActionListener {
         }
 	}
 	
+	private void fileloaded() {
+		
+			buttonStart.setEnabled(true);
+	        buttonStop.setEnabled(true);
+	        buttonPause.setEnabled(true);
+	        buttonSingleStep.setEnabled(true);
+	        buttonCreateBody.setEnabled(false);
+			buttonResetBody.setEnabled(false);
+	}
+
 	public void createRandomBody()
 	{
 		if (radioRandom.isSelected())
@@ -211,6 +259,7 @@ public class ControlPanel extends JFrame implements ActionListener {
 	public void startUniverse()
 	{
 		context.start_pressed();
+		txtFailed = false;
 	}
 	
 	public void pauseUniverse()
@@ -235,6 +284,7 @@ public class ControlPanel extends JFrame implements ActionListener {
 		radioRandom.setEnabled(true);
 		radioFile.setEnabled(true);
 		bodyNumber.setEditable(true);
+		txtFailed = false;
 	}
 	
 	public void randomPressed()
@@ -242,7 +292,7 @@ public class ControlPanel extends JFrame implements ActionListener {
 		buttonLoadFile.setEnabled(false);
 		amountLabel.setEnabled(true);
 		bodyNumber.setEnabled(true);
-		int n_body = randInt(2,1000);
+		n_body = randInt(2,1000);
 		bodyNumber.setText(Integer.toString(n_body));
 	}
 	
@@ -252,6 +302,7 @@ public class ControlPanel extends JFrame implements ActionListener {
 		amountLabel.setEnabled(false);
 		bodyNumber.setEnabled(false);
 		bodyNumber.setText("");
+		txtFailed = false;
 	}
 	
 	public static int randInt(int min, int max) {
@@ -264,6 +315,72 @@ public class ControlPanel extends JFrame implements ActionListener {
 	    int randomNum = rand.nextInt((max - min) + 1) + min;
 
 	    return randomNum;
+	}
+	
+	public void splitFile(File file){
+		try {
+			
+			//apro il file
+			FileInputStream fstream = new FileInputStream(file);
+			
+			//metto il FileInputStream
+			DataInputStream datain = new DataInputStream(fstream);
+			BufferedReader buffer = new BufferedReader(new InputStreamReader(datain));
+			
+			String line;
+			n_body = 0;
+
+			//leggo il file riga per riga
+			while((line = buffer.readLine()) != null){
+				BodyInfoFromFile temp = analizeLine(line,n_body);
+					bodiesFromFile.add(temp);
+					n_body++;
+			}
+			
+			datain.close();
+			
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}
+	
+	public BodyInfoFromFile analizeLine(String line, int n_body){
+		
+		st = new StringTokenizer(line);
+		
+		//analyze the position vector
+		string = st.nextToken();
+		try{
+			spls = string.substring(1, string.length()-1);
+			arg = spls.split(",");
+			position = new P2d(Double.parseDouble(arg[0]), Double.parseDouble(arg[1]));
+			System.out.println("pos_x: "+position.x+" pos_y: "+position.y);
+			
+			//analyze the speed vector
+			string = st.nextToken();
+			
+			spls = string.substring(1, string.length()-1);
+			arg = spls.split(",");
+			velocity = new V2d(Double.parseDouble(arg[0]),Double.parseDouble(arg[1]));
+			System.out.println("vel_x: "+velocity.x+" vel_y: "+velocity.y);
+			
+			//analyze the mass
+			string = st.nextToken();
+			
+			massa = Integer.parseInt(string);
+			System.out.println("massa: "+massa);
+		} catch(NumberFormatException e){
+			JOptionPane.showMessageDialog(this, "File loaded has error: numbers are written in a wrong format.");
+			buttonLoadFile.setEnabled(true);
+			txtFailed = true;
+		}
+		
+		BodyInfoFromFile biff = new BodyInfoFromFile(position, velocity, massa, n_body);
+		System.out.println("nbody_index: "+n_body);
+		return biff;
+		
 	}
 
 }
