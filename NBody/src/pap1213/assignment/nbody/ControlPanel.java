@@ -41,11 +41,14 @@ public class ControlPanel extends JFrame implements ActionListener {
     private double pos_y;
     private double vel_x;
     private double vel_y;
-    private int massa;
+    private double massa;
     private StringTokenizer st;
 	private String string;
+	private String string_massa;
 	private String[] arg;
 	private String spls;
+	private int exp;
+	private double base;
 	private P2d position;
 	private V2d velocity;
 	private int nbody;
@@ -367,10 +370,20 @@ public class ControlPanel extends JFrame implements ActionListener {
 			System.out.println("vel_x: "+velocity.x+" vel_y: "+velocity.y);
 			
 			//analyze the mass
-			string = st.nextToken();
+			//put that block out from try and catch because in that token 
+			//there is some special characters like * and ^
+			string_massa = st.nextToken();
+			System.out.println("string: "+string_massa);
+			spls = string_massa.substring(string_massa.length()-2);
+			exp = Integer.parseInt(spls);
 			
-			massa = Integer.parseInt(string);
+			spls = string_massa.substring(0,string_massa.length()-6);
+			massa = Double.parseDouble(spls);
+			
+			massa = massa * Math.pow(10, exp);
+		
 			System.out.println("massa: "+massa);
+			
 		} catch(NumberFormatException e){
 			JOptionPane.showMessageDialog(this, "File loaded has error: numbers are written in a wrong format.");
 			buttonLoadFile.setEnabled(true);

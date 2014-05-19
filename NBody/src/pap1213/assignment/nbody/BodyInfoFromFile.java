@@ -4,10 +4,10 @@ public class BodyInfoFromFile {
 
 	P2d position;
 	V2d velocity;
-	int mass;
+	double mass;
 	int index;
 	
-	public BodyInfoFromFile(P2d pos, V2d vel, int mass, int i)
+	public BodyInfoFromFile(P2d pos, V2d vel, double mass, int i)
 	{
 		
 		this.position = pos;
