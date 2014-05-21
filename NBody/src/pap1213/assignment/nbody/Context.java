@@ -20,6 +20,21 @@ public class Context {
 		bodies.clear();
 		universe = new Universe(nbody);
 		
+		Random ran_mass = new Random(System.nanoTime());
+		
+		double [ ] all_mass = new double [6];
+		for (int m = 0; m<6;m++)
+		{
+			//double val = Math.pow(((Math.random()*ran_mass.nextInt(10))*10),22+m );
+			double val_mass = Math.random()*ran_mass.nextInt(10);
+			if (val_mass == 0)
+			{
+				val_mass = Math.random()*ran_mass.nextInt(10)+1;
+			}
+			double final_val_mass = val_mass*Math.pow(10, 22+m);
+			System.out.println(m+" - valore: "+final_val_mass);
+			all_mass[m] = final_val_mass;
+		}
 		//System.out.println("creo corpi random...");
 		for (int i = 0; i<nbody; i++)
 		{
@@ -27,24 +42,26 @@ public class Context {
 			//Random velocità vogliamo un tetto massimo di 50.000m/s (che può essere positivo o negativo) quindi 
 			//mettiamo un tetto massimo di 100.000 m/s e togliamo ogni volta la metà del tetto al numero random es:
 			//random con Math.random() genera un numero tra 0 e 1.0 * 100.000 - 50.000
-			Random rand = new Random(System.nanoTime()+i);
-			//perch�� tra 590 e 570??
-			P2d pos = new P2d(rand.nextInt(1190),rand.nextInt(670));
-			//System.out.println("X: "+pos.x+" Y: "+pos.y);
-			//creo dx da un generatore random e lo moltiplico per il segno di un intero che mi restituisce
-			//il generatore perch�� sembra che con i double non ne dia mai con segno negativo
+			P2d pos = new P2d((Math.random()*(1190-1)+1),(Math.random()*(670-1)+1));
+			pos.x = pos.x * Math.pow(10, 4);
+			pos.y = pos.y * Math.pow(10, 4);
+			
+			System.out.println("X: "+pos.x+" Y: "+pos.y);
+
 	        double vx = ((Math.random()*3000)-1500);
 	        double vy = ((Math.random()*3000)-1500);
 	        V2d vel = new V2d(vx,vy);
-	        System.out.println("Vel x: "+vel.x+" Vel y: "+vel.y);
+	        //System.out.println("Vel x: "+vel.x+" Vel y: "+vel.y);
 	        //metto abs perch�� voglio le masse sempre positive
-	        double mass = Math.random()*10e9;
-	        //bounds = ctx.getBounds();
+	        System.out.println(Math.round(Math.random()*5));
+	        double mass = all_mass[(int)Math.round(Math.random()*5)];
+
 //	        Random randomGenerator = new Random();
 //	        int red = randomGenerator.nextInt(255);
 //	        int green = randomGenerator.nextInt(255);
 //	        int blue = randomGenerator.nextInt(255);
 //	        Color randomColour = new Color(red,green,blue);
+	        
 	        Color bodyColour = Color.WHITE;
 			Body agent = new Body(i,bodies,pos,vel,mass,bodyColour);
 	        bodies.add(agent);

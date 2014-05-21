@@ -358,7 +358,7 @@ public class ControlPanel extends JFrame implements ActionListener {
 		try{
 			spls = string.substring(1, string.length()-1);
 			arg = spls.split(",");
-			position = new P2d(Double.parseDouble(arg[0]), Double.parseDouble(arg[1]));
+			position = new P2d(Double.parseDouble(arg[0])*Math.pow(10, 4), Double.parseDouble(arg[1])*Math.pow(10, 4));
 			System.out.println("pos_x: "+position.x+" pos_y: "+position.y);
 			
 			//analyze the speed vector

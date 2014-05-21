@@ -41,7 +41,7 @@ public class UniverseFrame extends JFrame {
 		
 		public void paintComponent(Graphics g) {
             super.paintComponent(g);
-            System.out.println("Disegno");
+            //System.out.println("Disegno");
             g.clearRect(0, 0, 1200,700);
             Color prevColor = g.getColor();
 
@@ -54,8 +54,8 @@ public class UniverseFrame extends JFrame {
 	                for (int i=0; i<bodies.size(); i++){
 		                P2d p = bodies.get(i).getPos();
 		                g.setColor(bodies.get(i).color); // background color
-		                g.drawOval((int)p.x,(int)p.y,5,5);
-		                g.fillOval((int)p.x,(int)p.y, 5, 5);
+		                g.drawOval((int)(p.x/Math.pow(10, 4)),(int)(p.y/Math.pow(10, 4)),5,5);
+		                g.fillOval((int)(p.x/Math.pow(10, 4)),(int)(p.y/Math.pow(10, 4)), 5, 5);
 		            }
 	            }
             }

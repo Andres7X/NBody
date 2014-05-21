@@ -96,7 +96,7 @@ public class Universe extends Thread {
                 	List<Future<BodyInfo>> list = executor.invokeAll(bodies);
                 	for (Future<BodyInfo> future : list){
                 		BodyInfo temp = future.get();
-                		System.out.println(temp.index+" Pos x: "+temp.position.x+" Pos y: "+temp.position.y+" Vel x: "+temp.velocity.x+" Vel y: "+temp.velocity.y+" Massa: "+temp.mass);
+                		//System.out.println(temp.index+" Pos x: "+temp.position.x+" Pos y: "+temp.position.y+" Vel x: "+temp.velocity.x+" Vel y: "+temp.velocity.y+" Massa: "+temp.mass);
                 		bodies.get(temp.index).update(temp.position, temp.velocity, temp.fx, temp.fy);
                 	}
 
@@ -108,7 +108,7 @@ public class Universe extends Thread {
                 singleStep.set(false);
                 
                 fps = 1000000000.0 / (System.nanoTime() - lastTime);
-                System.out.println(fps);
+                //System.out.println(fps);
         	}
         }
     }
