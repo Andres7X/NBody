@@ -37,30 +37,17 @@ public class ControlPanel extends JFrame implements ActionListener {
     private Context context;
     private JFileChooser fc;
     private int n_body;
-    private double pos_x;
-    private double pos_y;
-    private double vel_x;
-    private double vel_y;
-    private double massa;
-    private StringTokenizer st;
-	private String string;
-	private String string_massa;
-	private String[] arg;
-	private String spls;
-	private int exp;
-	private double base;
-	private P2d position;
-	private V2d velocity;
-	private int nbody;
-	private ArrayList<BodyInfoFromFile> bodiesFromFile;
-	private boolean txtFailed;
+    
+
+
+	private boolean txtSuccess;
     
 	//Usare JPanel listPane = new JPanel();
     
 	public ControlPanel (Context ctx)
 	{
 		this.context = ctx ;
-		this.txtFailed = false;
+		this.txtSuccess = false;
         setTitle("Control Panel");
         setSize(400,200);
         setResizable(false);
@@ -175,7 +162,7 @@ public class ControlPanel extends JFrame implements ActionListener {
 
             if (returnVal == JFileChooser.APPROVE_OPTION) {
                 File file = fc.getSelectedFile();
-                txtFailed = false;
+                txtSuccess = false;
                 
                 //Questo codice serve per trovare l'estensione del file
                 //Riesce a gestire anche il caso in cui ci siano dei . nel file o nella directory
@@ -191,20 +178,16 @@ public class ControlPanel extends JFrame implements ActionListener {
                 //Se e' diversa da txt non andiamo oltre
                 if (extension.equalsIgnoreCase("txt"))
                 {
-                	//creo l'arraylist con le informazioni recuperate dal file
-                	bodiesFromFile = new ArrayList<BodyInfoFromFile>();
                 	//Carichiamo il file
-                	splitFile(file);
+                	txtSuccess = context.generateBodyFromFile(file);
                 	
-                	if(!txtFailed){
-                		context.generateBodyFromFile(bodiesFromFile.size(), bodiesFromFile);
+                	if(txtSuccess){
                 		fileloaded();
                 		System.out.println("Opening: " + file.getName() + " with extension: "+extension);
                 	}else{
-                		System.out.println("Error in: " + file.getName() + " with extension: "+extension);
+            			JOptionPane.showMessageDialog(this, "File loaded has error: numbers are written in a wrong format.");
                 	}
-                	
-                    
+  
                 } else {
                 	
                     JOptionPane.showMessageDialog(this, "No .txt file choosen.");
@@ -239,6 +222,7 @@ public class ControlPanel extends JFrame implements ActionListener {
 	        buttonSingleStep.setEnabled(true);
 	        buttonCreateBody.setEnabled(false);
 			buttonResetBody.setEnabled(false);
+			buttonLoadFile.setEnabled(false);
 	}
 
 	public void createRandomBody()
@@ -262,7 +246,7 @@ public class ControlPanel extends JFrame implements ActionListener {
 	public void startUniverse()
 	{
 		context.start_pressed();
-		txtFailed = false;
+		txtSuccess = false;
 	}
 	
 	public void pauseUniverse()
@@ -287,7 +271,7 @@ public class ControlPanel extends JFrame implements ActionListener {
 		radioRandom.setEnabled(true);
 		radioFile.setEnabled(true);
 		bodyNumber.setEditable(true);
-		txtFailed = false;
+		txtSuccess = false;
 	}
 	
 	public void randomPressed()
@@ -305,7 +289,7 @@ public class ControlPanel extends JFrame implements ActionListener {
 		amountLabel.setEnabled(false);
 		bodyNumber.setEnabled(false);
 		bodyNumber.setText("");
-		txtFailed = false;
+		txtSuccess = false;
 	}
 	
 	public static int randInt(int min, int max) {
@@ -319,81 +303,4 @@ public class ControlPanel extends JFrame implements ActionListener {
 
 	    return randomNum;
 	}
-	
-	public void splitFile(File file){
-		try {
-			
-			//apro il file
-			FileInputStream fstream = new FileInputStream(file);
-			
-			//metto il FileInputStream
-			DataInputStream datain = new DataInputStream(fstream);
-			BufferedReader buffer = new BufferedReader(new InputStreamReader(datain));
-			
-			String line;
-			n_body = 0;
-
-			//leggo il file riga per riga
-			while((line = buffer.readLine()) != null){
-				BodyInfoFromFile temp = analizeLine(line,n_body);
-					bodiesFromFile.add(temp);
-					n_body++;
-			}
-			
-			datain.close();
-			
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-	}
-	
-	public BodyInfoFromFile analizeLine(String line, int n_body){
-		
-		st = new StringTokenizer(line);
-		
-		//analyze the position vector
-		string = st.nextToken();
-		try{
-			spls = string.substring(1, string.length()-1);
-			arg = spls.split(",");
-			position = new P2d(Double.parseDouble(arg[0])*Math.pow(10, 4), Double.parseDouble(arg[1])*Math.pow(10, 4));
-			System.out.println("pos_x: "+position.x+" pos_y: "+position.y);
-			
-			//analyze the speed vector
-			string = st.nextToken();
-			
-			spls = string.substring(1, string.length()-1);
-			arg = spls.split(",");
-			velocity = new V2d(Double.parseDouble(arg[0]),Double.parseDouble(arg[1]));
-			System.out.println("vel_x: "+velocity.x+" vel_y: "+velocity.y);
-			
-			//analyze the mass
-			//put that block out from try and catch because in that token 
-			//there is some special characters like * and ^
-			string_massa = st.nextToken();
-			System.out.println("string: "+string_massa);
-			spls = string_massa.substring(string_massa.length()-2);
-			exp = Integer.parseInt(spls);
-			
-			spls = string_massa.substring(0,string_massa.length()-6);
-			massa = Double.parseDouble(spls);
-			
-			massa = massa * Math.pow(10, exp);
-		
-			System.out.println("massa: "+massa);
-			
-		} catch(NumberFormatException e){
-			JOptionPane.showMessageDialog(this, "File loaded has error: numbers are written in a wrong format.");
-			buttonLoadFile.setEnabled(true);
-			txtFailed = true;
-		}
-		
-		BodyInfoFromFile biff = new BodyInfoFromFile(position, velocity, massa, n_body);
-		System.out.println("nbody_index: "+n_body);
-		return biff;
-		
-	}
-
 }

@@ -53,7 +53,7 @@ public class UniverseFrame extends JFrame {
 	            if (bodies!=null){
 	                for (int i=0; i<bodies.size(); i++){
 		                P2d p = bodies.get(i).getPos();
-		                g.setColor(bodies.get(i).color); // background color
+		                g.setColor(bodies.get(i).me.color); // background color
 		                g.drawOval((int)(p.x/Math.pow(10, 4)),(int)(p.y/Math.pow(10, 4)),5,5);
 		                g.fillOval((int)(p.x/Math.pow(10, 4)),(int)(p.y/Math.pow(10, 4)), 5, 5);
 		            }
