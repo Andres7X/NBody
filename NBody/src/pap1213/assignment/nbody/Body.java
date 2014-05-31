@@ -8,7 +8,7 @@ public class Body implements Callable<BodyInfo> {
 	private static final double G = 6.674*Math.pow(10,-11);   // gravitational constant
 	private static final double dt = 20*0.001;
 	//private static final double solarmass=1.98892e30;
-	private double EPS = Math.pow(10, 8);      // softening parameter (just to avoid infinities)
+	//private double EPS = Math.pow(10, 8);      // softening parameter (just to avoid infinities)
 
 	private ArrayList<Body> bodies;
 	private P2d o;

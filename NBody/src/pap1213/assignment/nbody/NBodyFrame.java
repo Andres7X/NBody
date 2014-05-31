@@ -4,31 +4,52 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.util.ArrayList;
 
-import javax.swing.*;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
 
-public class UniverseFrame extends JFrame {
-	
+public class NBodyFrame extends JFrame {
+
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
 	private UniversePanel panel;
 	
-	public UniverseFrame(){
+	public NBodyFrame(){
         setTitle("N-Body");
-        setSize(1200,700);
+        setSize(1200,760);
         setResizable(false);
-        panel = new UniversePanel();
-        getContentPane().add(panel);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        
+        JPanel top = new JPanel();
+        top.setSize(1200,40);
+        JLabel infoLabel = new JLabel("Choose one option, create and start!");
+        infoLabel.setForeground(Color.BLACK);
+        top.add(infoLabel);
+        top.setLocation(0, this.getSize().height/2);
+        add( top );
     }
 	
 	public void updateBodies(ArrayList<Body> bodies){
         panel.updateBodies(bodies);
     }
 	
+	public void createUniversePanel()
+	{
+        panel = new UniversePanel();
+        getContentPane().add(panel);
+	}
+	
+	public void removeUniversePanel()
+	{
+		remove(panel);
+		revalidate();
+		repaint();
+	}
+	
 	public static class UniversePanel extends JPanel {
-		
+			
         /**
 		 * 
 		 */
@@ -36,7 +57,7 @@ public class UniverseFrame extends JFrame {
 		private ArrayList<Body> bodies;
 		
 		public UniversePanel(){
-            setSize(900,700);
+            setSize(1200,700);
         }
 		
 		public void paintComponent(Graphics g) {
@@ -75,6 +96,4 @@ public class UniverseFrame extends JFrame {
             repaint();
         }
 	}
-	
-
 }

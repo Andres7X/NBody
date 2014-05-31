@@ -13,21 +13,21 @@ public class Universe extends Thread {
 	private AtomicBoolean pause;
 	private AtomicBoolean singleStep;
 	
-    private UniverseFrame frame;
+    private NBodyFrame frame;
 	private ArrayList<Body> bodies;
 	private P2d[] pos;
 	private int cores;
 	private ExecutorService executor;
-	private long lastTime;
-	private double fps;
+	//private long lastTime;
+	//private double fps;
 	
-    public Universe(int nbody){
+    public Universe(int nbody, NBodyFrame mainFrame){
         stop = new AtomicBoolean(false);
         pause = new AtomicBoolean(true);
         singleStep = new AtomicBoolean(false);
         
-        frame = new UniverseFrame();
-        frame.setVisible(true);
+        frame = mainFrame;
+        frame.createUniversePanel();
         cores = Runtime.getRuntime().availableProcessors() + 1;
         System.out.println("Numero dei cores: "+cores);
         executor = Executors.newFixedThreadPool(cores);
@@ -77,8 +77,7 @@ public class Universe extends Thread {
     	stop.set(true);
     	pause.set(true);
     	singleStep.set(false);
-    	frame.setVisible(false);
-    	frame.dispose();
+    	frame.removeUniversePanel();
     }
     
     public void printBody()
@@ -91,7 +90,7 @@ public class Universe extends Thread {
         	//System.out.println("");
         	if (!pause.get() || singleStep.get())
         	{
-        		lastTime = System.nanoTime();
+        		//lastTime = System.nanoTime();
                 try {
                 	List<Future<BodyInfo>> list = executor.invokeAll(bodies);
                 	for (Future<BodyInfo> future : list){
@@ -107,7 +106,7 @@ public class Universe extends Thread {
                 
                 singleStep.set(false);
                 
-                fps = 1000000000.0 / (System.nanoTime() - lastTime);
+                //fps = 1000000000.0 / (System.nanoTime() - lastTime);
                 //System.out.println(fps);
         	}
         }

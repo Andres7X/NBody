@@ -4,9 +4,8 @@ public class NBody {
 	public static void main(String[] args) {
 		
 		Context ctx = new Context();
+		ctx.createFrame();
 		
-		ControlPanel control = new ControlPanel(ctx);
-		control.setVisible(true);
 	}
 
 }

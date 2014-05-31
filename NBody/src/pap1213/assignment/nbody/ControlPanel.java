@@ -1,27 +1,21 @@
 package pap1213.assignment.nbody;
 
-import javax.swing.*;
-import javax.swing.filechooser.FileNameExtensionFilter;
-import javax.swing.text.Position;
-
-import java.awt.Dimension;
-import java.awt.GridBagLayout;
-import java.awt.Toolkit;
-import java.awt.event.*;
-import java.io.BufferedReader;
-import java.io.DataInputStream;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
 import java.util.Random;
-import java.util.StringTokenizer;
+import javax.swing.ButtonGroup;
+import javax.swing.JButton;
+import javax.swing.JFileChooser;
+import javax.swing.JFormattedTextField;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JRadioButton;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
-public class ControlPanel extends JFrame implements ActionListener {
-	
-	private static final long serialVersionUID = 7526472295622776147L;
+public class ControlPanel extends JPanel implements ActionListener {
+	private static final long serialVersionUID = 1L;
 	
     private JButton buttonStart;
     private JButton buttonStop;
@@ -36,29 +30,14 @@ public class ControlPanel extends JFrame implements ActionListener {
     private JButton buttonLoadFile;
     private Context context;
     private JFileChooser fc;
+    private boolean txtSuccess;
     private int n_body;
     
-
-
-	private boolean txtSuccess;
-    
-	//Usare JPanel listPane = new JPanel();
-    
-	public ControlPanel (Context ctx)
-	{
+	public ControlPanel (Context ctx){
+        setSize(1200,40);
+        //setBackground(Color.yellow);
 		this.context = ctx ;
 		this.txtSuccess = false;
-        setTitle("Control Panel");
-        setSize(400,200);
-        setResizable(false);
-        addWindowListener(new WindowAdapter(){
-			public void windowClosing(WindowEvent ev){
-				System.exit(-1);
-			}
-			public void windowClosed(WindowEvent ev){
-				System.exit(-1);
-			}
-		});
 		
         buttonStart = new JButton("Start");
         buttonStop = new JButton("Stop");
@@ -76,13 +55,6 @@ public class ControlPanel extends JFrame implements ActionListener {
         fc = new JFileChooser();
         FileNameExtensionFilter filter = new FileNameExtensionFilter("TEXT FILES", "txt", "text");
         fc.setFileFilter(filter);
-        
-        JPanel p = new JPanel();
-        //p.setLayout(new GridBagLayout());
-        p.add(buttonStart);
-        p.add(buttonPause);
-        p.add(buttonSingleStep);
-        p.add(buttonStop);
         
         buttonStart.addActionListener(this);
         buttonStop.addActionListener(this);
@@ -104,35 +76,28 @@ public class ControlPanel extends JFrame implements ActionListener {
         group.add(radioRandom);
         group.add(radioFile);
         
-        JPanel p2 = new JPanel();
-        p2.setLayout(new GridBagLayout());
-        p2.add(radioRandom);
-        p2.add(radioFile);
-        p2.add(buttonLoadFile);
         radioRandom.addActionListener(this);
         radioFile.addActionListener(this);
         buttonLoadFile.addActionListener(this);
         
-        JPanel p3 = new JPanel();
-        p3.setLayout(new GridBagLayout());
-        p3.add(amountLabel);
-        p3.add(bodyNumber);
-        p3.add(buttonCreateBody);
-        p3.add(buttonResetBody);
+        add(buttonStart);
+        add(buttonPause);
+        add(buttonSingleStep);
+        add(buttonStop);
         
-        JPanel panel = new JPanel();
-        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-        panel.add(p);
-        panel.add(new JSeparator(SwingConstants.HORIZONTAL));
-        panel.add(p2);
-        panel.add(p3);
+        //add(new JSeparator(SwingConstants.VERTICAL));
         
-        getContentPane().add(panel);
+        add(radioRandom);
+        add(radioFile);
+        add(buttonLoadFile);
         
-        Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
-        this.setLocation(dim.width/2-this.getSize().width/2, dim.height/2-this.getSize().height/2);
-	}
-	
+        add(amountLabel);
+        add(bodyNumber);
+        add(buttonCreateBody);
+        add(buttonResetBody);
+        
+    }
+
 	public void actionPerformed(ActionEvent e) {
         Object src = e.getSource();
         if (src==buttonStart){
@@ -142,6 +107,7 @@ public class ControlPanel extends JFrame implements ActionListener {
         		JOptionPane.showMessageDialog(null, "Select one option!");
         	} else {
         		startUniverse();
+        		buttonStart.setEnabled(false);
         	}
         } else if (src==buttonStop){
         	System.out.println("Stop button");
@@ -150,11 +116,13 @@ public class ControlPanel extends JFrame implements ActionListener {
         {
         	System.out.println("Pause button");
         	pauseUniverse();
+        	buttonStart.setEnabled(true);
         	
         } else if (src == buttonSingleStep)
         {
         	System.out.println("Single Step button");
         	singleStepUniverse();
+        	buttonStart.setEnabled(true);
         } else if (src == buttonLoadFile)
         {
         	System.out.println("Load File button");
@@ -207,7 +175,21 @@ public class ControlPanel extends JFrame implements ActionListener {
         } else if (src == buttonCreateBody)
         {
         	System.out.println("Create Body Pressed");
-        	createRandomBody();
+        	
+        	if (!radioRandom.isSelected() && !radioFile.isSelected())
+        	{
+        		JOptionPane.showMessageDialog(null, "Select one option first!");
+        	} else {
+        		
+        		if (Integer.parseInt(bodyNumber.getText()) != 0)
+        		{
+        			createRandomBody();
+        			
+        		} else {
+        			JOptionPane.showMessageDialog(null, "The body number must be different from 0!");
+        		}
+        	}
+        	
         } else if (src == buttonResetBody)
         {
         	System.out.println("Reset Body Pressed");
