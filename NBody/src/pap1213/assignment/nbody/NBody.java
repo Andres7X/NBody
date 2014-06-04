@@ -6,6 +6,8 @@ public class NBody {
 		Context ctx = new Context();
 		ctx.createFrame();
 		
+		System.out.println(Utility.rect.width+"-"+Utility.rect.height);
+		
 	}
 
 }

@@ -18,12 +18,12 @@ public class NBodyFrame extends JFrame {
 	
 	public NBodyFrame(){
         setTitle("N-Body");
-        setSize(1200,760);
+        setSize(Utility.rect.width,Utility.rect.height);//1200x760
         setResizable(false);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         
         JPanel top = new JPanel();
-        top.setSize(1200,40);
+        top.setSize(Utility.rect.width,40); //1200x40
         JLabel infoLabel = new JLabel("Choose one option, create and start!");
         infoLabel.setForeground(Color.BLACK);
         top.add(infoLabel);
@@ -57,17 +57,17 @@ public class NBodyFrame extends JFrame {
 		private ArrayList<Body> bodies;
 		
 		public UniversePanel(){
-            setSize(1200,700);
+            setSize(Utility.rect.width,Utility.rect.height-60); //1200x700
         }
 		
 		public void paintComponent(Graphics g) {
             super.paintComponent(g);
             //System.out.println("Disegno");
-            g.clearRect(0, 0, 1200,700);
+            g.clearRect(0, 0, Utility.rect.width,Utility.rect.height-60);
             Color prevColor = g.getColor();
 
             g.setColor(Color.BLACK); // background color
-            g.fillRect(0, 0, 1200,700); // fill a rectangle with background color
+            g.fillRect(0, 0, Utility.rect.width,Utility.rect.height-60); // fill a rectangle with background color
             g.setColor(prevColor);
 
             synchronized (this){

@@ -59,7 +59,7 @@ public class Context {
 			//Random velocità vogliamo un tetto massimo di 50.000m/s (che può essere positivo o negativo) quindi 
 			//mettiamo un tetto massimo di 100.000 m/s e togliamo ogni volta la metà del tetto al numero random es:
 			//random con Math.random() genera un numero tra 0 e 1.0 * 100.000 - 50.000
-			P2d pos = new P2d((Math.random()*(1190-1)+1),(Math.random()*(670-1)+1));
+			P2d pos = new P2d((Math.random()*(Utility.rect.width-10-1)+1),(Math.random()*(Utility.rect.height-90-1)+1));
 			pos.x = pos.x * Math.pow(10, 4);
 			pos.y = pos.y * Math.pow(10, 4);
 			

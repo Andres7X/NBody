@@ -1,9 +1,11 @@
 package pap1213.assignment.nbody;
 
+import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.util.Random;
+
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
@@ -34,7 +36,8 @@ public class ControlPanel extends JPanel implements ActionListener {
     private int n_body;
     
 	public ControlPanel (Context ctx){
-        setSize(1200,40);
+        setSize(Utility.rect.width,40);
+        setLayout(new GridBagLayout());
         //setBackground(Color.yellow);
 		this.context = ctx ;
 		this.txtSuccess = false;
