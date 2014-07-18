@@ -25,7 +25,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
  */
 public class ControlPanel extends JPanel implements ActionListener {
 	private static final long serialVersionUID = 1L;
-	
+
     private JButton buttonStart;
     private JButton buttonStop;
     private JButton buttonPause;
