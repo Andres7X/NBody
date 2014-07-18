@@ -8,6 +8,14 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+/**
+ *  Class NBodyFrame extends the JFrame Java Swing class.
+ *  <p>
+ *  It contains the JFrame of the project and the UniversePanel class that
+ *  contains the method to draw the body
+ *  
+ * 	@author Nompleggio Pietro Antonio, Buscarini Andrea
+ */
 public class NBodyFrame extends JFrame {
 
 	/**
@@ -16,6 +24,10 @@ public class NBodyFrame extends JFrame {
 	private static final long serialVersionUID = 1L;
 	private UniversePanel panel;
 	
+	/**
+	 * Class NBodyFrame constructor.
+	 * 
+	 **/
 	public NBodyFrame(){
         setTitle("N-Body");
         setSize(Utility.rect.width,Utility.rect.height);
@@ -31,16 +43,35 @@ public class NBodyFrame extends JFrame {
         add( top );
     }
 	
+	/**
+	 * Update Bodies method
+	 * <p>
+	 * Call the method of the JPanel that set the new bodies reference
+	 * 
+	 * @param bodies the reference of the array that contains all the bodies
+	 **/
 	public void updateBodies(ArrayList<Body> bodies){
         panel.updateBodies(bodies);
     }
 	
+	/**
+	 * Create Panel method
+	 * <p>
+	 * This method create the panel to start a new simulation
+	 * 
+	 **/
 	public void createUniversePanel()
 	{
         panel = new UniversePanel();
         getContentPane().add(panel);
 	}
 	
+	/**
+	 * Create Panel method
+	 * <p>
+	 * This method remove the panel to finish a simulation, it's called by the stop button of the GUI.
+	 * 
+	 **/
 	public void removeUniversePanel()
 	{
 		remove(panel);
@@ -48,15 +79,33 @@ public class NBodyFrame extends JFrame {
 		repaint();
 	}
 	
+	/**
+	 *  Class UniversePanel extends the UniversePanel Java Swing class.
+	 *  <p>
+	 *  It contains the JPanel of the project and the JPanel that
+	 *  contains the method to draw the body
+	 *  
+	 */
 	public static class UniversePanel extends JPanel {
 
 		private static final long serialVersionUID = 1L;
 		private ArrayList<Body> bodies;
 		
+		/**
+		 * Class UniversePanel constructor.
+		 * 
+		 **/
 		public UniversePanel(){
             setSize(Utility.rect.width,Utility.rect.height-60);
         }
 		
+		/**
+		 * Paint method
+		 * <p>
+		 * This method paint the new body position in the panel
+		 * 
+		 * @param g
+		 **/
 		public void paintComponent(Graphics g) {
             super.paintComponent(g);
             g.clearRect(0, 0, Utility.rect.width,Utility.rect.height-60);
@@ -80,6 +129,13 @@ public class NBodyFrame extends JFrame {
             }
         }
         
+		/**
+		 * Update Bodies method
+		 * <p>
+		 * This method set the new bodies reference and the call the repaint method to draw the new position
+		 * 
+		 * @param bodies the reference of the array that contains all the bodies
+		 **/
         public void updateBodies(ArrayList<Body> bodies){
         	this.bodies = bodies;
             repaint();

@@ -11,6 +11,14 @@ import java.util.ArrayList;
 import java.util.Random;
 import java.util.StringTokenizer;
 
+/**
+ *  Class Context.
+ *  <p>
+ *  It represents the class that generate the bodies with different method,
+ *  and receive the request from the GUI ControlPanel class 
+ *  
+ * 	@author Nompleggio Pietro Antonio, Buscarini Andrea
+ */
 public class Context {
 	
 	private ArrayList<Body> bodies;
@@ -18,6 +26,11 @@ public class Context {
 	private NBodyFrame mainFrame;
 	private ControlPanel ctrl;
 	
+	/**
+	 * Class Universe constructor.
+	 * <p>
+	 * Create the bodies array, the Control Panel class that handle the GUI
+	 **/
 	public Context ()
 	{
 		bodies = new ArrayList<Body>();
@@ -28,11 +41,23 @@ public class Context {
 		mainFrame.add(ctrl);
 	}
 	
+	/**
+	 * Create frame method.
+	 * <p>
+	 * Set visible the Control Panel
+	 **/
 	public void createFrame()
 	{
 		mainFrame.setVisible(true);
 	}
 	
+	/**
+	 * Random Body Generator method.
+	 * <p>
+	 * This body generate a nbody random number of body.
+	 * 
+	 * @param nbody the number of the bodies 
+	 **/
 	public void generateRandomBodyWithNumber(int nbody)
 	{
 		bodies.clear();
@@ -59,8 +84,8 @@ public class Context {
 			pos.x = pos.x * Math.pow(10, 4);
 			pos.y = pos.y * Math.pow(10, 4);
 			
-			//Random velocità vogliamo un tetto massimo di 3000m/s (che può essere positivo o negativo) quindi 
-			//mettiamo un tetto massimo di 3000 m/s e togliamo ogni volta la metà del tetto al numero random es:
+			//Random velocita vogliamo un tetto massimo di 3000m/s (che puo essere positivo o negativo) quindi 
+			//mettiamo un tetto massimo di 3000 m/s e togliamo ogni volta la meta del tetto al numero random es:
 			//random con Math.random() genera un numero tra 0 e 1.0 * 3000 - 1500
 	        double vx = ((Math.random()*Utility.max_velocity)-(Utility.max_velocity/2));
 	        double vy = ((Math.random()*Utility.max_velocity)-(Utility.max_velocity/2));
@@ -79,6 +104,15 @@ public class Context {
 		universe.start();
 	}
 	
+	/**
+	 * Choose Body Colory method.
+	 * <p>
+	 * This method receive the mass value of the body and choose the right color.
+	 * 
+	 * @param mass the mass of the body 
+	 * 
+	 * @return bodyColour the color of the body
+	 **/
 	private Color selectColorForBodyMass(double mass)
 	{
 		Color bodyColour = Color.white;
@@ -105,6 +139,16 @@ public class Context {
 		return bodyColour;
 		
 	}
+	
+	/**
+	 * Load File Generate Body method.
+	 * <p>
+	 * This method receive a file to read and generate bodies.
+	 * 
+	 * @param file the txt file to reade to get all bodies to create
+	 * 
+	 * @return boolean return true if success the file loading, otherwise return false
+	 **/
 	public boolean generateBodyFromFile(File file){
 
 		bodies.clear();
@@ -125,6 +169,15 @@ public class Context {
 		return true;
 	}
 	
+	/**
+	 * Split File method.
+	 * <p>
+	 * This method read the file line by line and pass the line to the analizeLine mehotd.
+	 * 
+	 * @param file the txt file to read to get all bodies to create
+	 * 
+	 * @return boolean return true if success the file reading, otherwise return false
+	 **/
 	private boolean splitFile(File file){
 		try {
 			
@@ -165,6 +218,16 @@ public class Context {
 		
 	}
 	
+	/**
+	 * Analize Line method.
+	 * <p>
+	 * This method read the line and extract the body information, and create the Body.
+	 * 
+	 * @param line the text line to parse
+	 * @param n_body the number of bodies
+	 * 
+	 * @return boolean return true if success the file reading, otherwise return false
+	 **/
 	public boolean analizeLine(String line, int n_body){
 		
 		StringTokenizer st = new StringTokenizer(line);
@@ -176,7 +239,6 @@ public class Context {
 			String spls = string.substring(1, string.length()-1);
 			String[] arg = spls.split(",");
 			P2d position = new P2d(Double.parseDouble(arg[0])*Math.pow(10, 4), Double.parseDouble(arg[1])*Math.pow(10, 4));
-			System.out.println("pos_x: "+position.x+" pos_y: "+position.y);
 			
 			//analyze the speed vector
 			string = st.nextToken();
@@ -184,13 +246,12 @@ public class Context {
 			spls = string.substring(1, string.length()-1);
 			arg = spls.split(",");
 			V2d velocity = new V2d(Double.parseDouble(arg[0]),Double.parseDouble(arg[1]));
-			System.out.println("vel_x: "+velocity.x+" vel_y: "+velocity.y);
 			
 			//analyze the mass
 			//put that block out from try and catch because in that token 
 			//there is some special characters like * and ^
 			String string_massa = st.nextToken();
-			System.out.println("string: "+string_massa);
+
 			spls = string_massa.substring(string_massa.length()-2);
 			int exp = Integer.parseInt(spls);
 			
@@ -198,8 +259,6 @@ public class Context {
 			double mass = Double.parseDouble(spls);
 			
 			mass = mass * Math.pow(10, exp);
-		
-			System.out.println("massa: "+mass);
 			
 			Color bodyColour = selectColorForBodyMass(mass);
 	        
@@ -214,29 +273,43 @@ public class Context {
 		}		
 	}
 	
+	/**
+	 * Start method.
+	 * <p>
+	 * Call the start method in Universe Class
+	 **/
 	public void start_pressed()
 	{
 		universe.start_pressed();
 	}
 	
+	/**
+	 * Pause method.
+	 * <p>
+	 * Call the pause method in Universe Class
+	 **/
 	public void pause_pressed()
 	{
 		universe.pause_pressed();
 	}
 	
+	/**
+	 * Single Step method.
+	 * <p>
+	 * Call the single step method in Universe Class
+	 **/
 	public void singleStep_pressed()
 	{
 		universe.singleStep_pressed();
 	}
 	
+	/**
+	 * Stop method.
+	 * <p>
+	 * Call the stop method in Universe Class
+	 **/
 	public void stop_pressed()
 	{
 		universe.stop_pressed();
 	}
-	
-	public int bodyNumber ()
-	{
-		return bodies.size();
-	}
-	
 }

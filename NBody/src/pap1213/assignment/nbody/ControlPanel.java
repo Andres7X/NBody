@@ -16,6 +16,13 @@ import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
+/**
+ *  Class Universe extends the JPanel Java Swing class.
+ *  <p>
+ *  It represents the class that contain the GUI of hte Control Panel
+ *  
+ * 	@author Nompleggio Pietro Antonio, Buscarini Andrea
+ */
 public class ControlPanel extends JPanel implements ActionListener {
 	private static final long serialVersionUID = 1L;
 	
@@ -35,6 +42,11 @@ public class ControlPanel extends JPanel implements ActionListener {
     private boolean txtSuccess;
     private int n_body;
     
+	/**
+	 * Class ControlPanel constructor.
+	 * 
+	 * @param ctx the reference of the Context
+	 **/
 	public ControlPanel (Context ctx){
         setSize(Utility.rect.width,40);
         setLayout(new GridBagLayout());
@@ -99,6 +111,15 @@ public class ControlPanel extends JPanel implements ActionListener {
         
     }
 
+	/**
+	 * Action Perform Method
+	 * <p>
+	 * The listener interface for receiving action events. The class that is interested in processing an action event implements this interface, 
+	 * and the object created with that class is registered with a component, using the component's addActionListener method. When the action event occurs, 
+	 * that object's actionPerformed method is invoked.
+	 * 
+	 * @param e ActionEvent
+	 **/
 	public void actionPerformed(ActionEvent e) {
         Object src = e.getSource();
         if (src==buttonStart){
@@ -192,6 +213,11 @@ public class ControlPanel extends JPanel implements ActionListener {
         }
 	}
 	
+	/**
+	 * File Loaded method.
+	 * <p>
+	 * Called when the file is successfully loaded.
+	 **/
 	private void fileloaded() {
 		
 			buttonStart.setEnabled(true);
@@ -203,6 +229,11 @@ public class ControlPanel extends JPanel implements ActionListener {
 			buttonLoadFile.setEnabled(false);
 	}
 
+	/**
+	 * Random Radio method.
+	 * <p>
+	 * The random radio button is pressed.
+	 **/
 	public void createRandomBody()
 	{
 		if (radioRandom.isSelected())
@@ -221,22 +252,42 @@ public class ControlPanel extends JPanel implements ActionListener {
         buttonSingleStep.setEnabled(true);
 	}
 	
+	/**
+	 * Start method.
+	 * <p>
+	 * Call the start method in Context Class
+	 **/
 	public void startUniverse()
 	{
 		context.start_pressed();
 		txtSuccess = false;
 	}
 	
+	/**
+	 * Pause method.
+	 * <p>
+	 * Call the pause method in Context Class
+	 **/
 	public void pauseUniverse()
 	{
 		context.pause_pressed();
 	}
 	
+	/**
+	 * Single Step method.
+	 * <p>
+	 * Call the single step method in Context Class
+	 **/
 	public void singleStepUniverse()
 	{
 		context.singleStep_pressed();
 	}
 	
+	/**
+	 * Stop method.
+	 * <p>
+	 * Call the stop method in Context Class
+	 **/
 	public void stopUniverse()
 	{
 		context.stop_pressed();
@@ -252,6 +303,11 @@ public class ControlPanel extends JPanel implements ActionListener {
 		txtSuccess = false;
 	}
 	
+	/**
+	 * Random button pressed.
+	 * <p>
+	 * Called when the random butotn is pressed and generate a random number.
+	 **/
 	public void randomPressed()
 	{
 		buttonLoadFile.setEnabled(false);
@@ -261,6 +317,11 @@ public class ControlPanel extends JPanel implements ActionListener {
 		bodyNumber.setText(Integer.toString(n_body));
 	}
 	
+	/**
+	 * File Load method.
+	 * <p>
+	 * The radio button load file is pressed.
+	 **/
 	public void selectFileRadio()
 	{
 		buttonLoadFile.setEnabled(true);
@@ -270,6 +331,16 @@ public class ControlPanel extends JPanel implements ActionListener {
 		txtSuccess = false;
 	}
 	
+	/**
+	 * Generate Random int method.
+	 * <p>
+	 * The method generate a random int number between two int.
+	 * 
+	 * @param min minimum random number
+	 * @param max maximum random number
+	 * 
+	 * @return randomNum the random value generated
+	 **/
 	public static int randInt(int min, int max) {
 
 	    // Usually this can be a field rather than a method variable
