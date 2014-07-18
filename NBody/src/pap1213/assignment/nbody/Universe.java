@@ -15,11 +15,8 @@ public class Universe extends Thread {
 	
     private NBodyFrame frame;
 	private ArrayList<Body> bodies;
-	private P2d[] pos;
 	private int cores;
 	private ExecutorService executor;
-	//private long lastTime;
-	//private double fps;
 	
     public Universe(int nbody, NBodyFrame mainFrame){
         stop = new AtomicBoolean(false);
@@ -31,27 +28,11 @@ public class Universe extends Thread {
         cores = Runtime.getRuntime().availableProcessors() + 1;
         System.out.println("Numero dei cores: "+cores);
         executor = Executors.newFixedThreadPool(cores);
-        
-        pos = new P2d[nbody];
-        
    }
     
     public void setBodies(ArrayList<Body> bodies) {
 		this.bodies = bodies;
 	}
-    
-    public P2d[] getPositions(){
-    	for(int i = 0; i<bodies.size(); i++){
-    		pos[i] = bodies.get(i).getPos();
-    		//System.out.println("Il corpo "+i+" ha posizione: ("+pos[i].x+", "+pos[i].y+")");
-    	}
-    	//System.out.println("Ciclo finito");
-    	return pos;
-    }
-    
-    public synchronized void setPos(P2d[] p){
-    	this.pos = p;
-    }
     
     public void start_pressed()
     {
@@ -87,27 +68,23 @@ public class Universe extends Thread {
     
     public void run(){
         while (!stop.get()) {
-        	//System.out.println("");
         	if (!pause.get() || singleStep.get())
         	{
-        		//lastTime = System.nanoTime();
                 try {
                 	List<Future<BodyInfo>> list = executor.invokeAll(bodies);
                 	for (Future<BodyInfo> future : list){
                 		BodyInfo temp = future.get();
-                		//System.out.println(temp.index+" Pos x: "+temp.position.x+" Pos y: "+temp.position.y+" Vel x: "+temp.velocity.x+" Vel y: "+temp.velocity.y+" Massa: "+temp.mass);
                 		bodies.get(temp.index).update(temp);
                 	}
 
                 	frame.updateBodies(bodies);
-                    //Thread.sleep(20);     
-                } catch (Exception ex){
-                }
+                	
+                	} catch (Exception ex)
+                	{
+                		System.out.println("Exception: "+ex);
+                	}
                 
                 singleStep.set(false);
-                
-                //fps = 1000000000.0 / (System.nanoTime() - lastTime);
-                //System.out.println(fps);
         	}
         }
     }

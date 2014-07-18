@@ -38,7 +38,7 @@ public class ControlPanel extends JPanel implements ActionListener {
 	public ControlPanel (Context ctx){
         setSize(Utility.rect.width,40);
         setLayout(new GridBagLayout());
-        //setBackground(Color.yellow);
+
 		this.context = ctx ;
 		this.txtSuccess = false;
 		
@@ -88,8 +88,6 @@ public class ControlPanel extends JPanel implements ActionListener {
         add(buttonSingleStep);
         add(buttonStop);
         
-        //add(new JSeparator(SwingConstants.VERTICAL));
-        
         add(radioRandom);
         add(radioFile);
         add(buttonLoadFile);
@@ -104,7 +102,6 @@ public class ControlPanel extends JPanel implements ActionListener {
 	public void actionPerformed(ActionEvent e) {
         Object src = e.getSource();
         if (src==buttonStart){
-        	System.out.println("Start button");
         	if (!radioRandom.isSelected() && !radioFile.isSelected())
         	{
         		JOptionPane.showMessageDialog(null, "Select one option!");
@@ -113,22 +110,18 @@ public class ControlPanel extends JPanel implements ActionListener {
         		buttonStart.setEnabled(false);
         	}
         } else if (src==buttonStop){
-        	System.out.println("Stop button");
         	stopUniverse();
         } else if (src == buttonPause)
         {
-        	System.out.println("Pause button");
         	pauseUniverse();
         	buttonStart.setEnabled(true);
         	
         } else if (src == buttonSingleStep)
         {
-        	System.out.println("Single Step button");
         	singleStepUniverse();
         	buttonStart.setEnabled(true);
         } else if (src == buttonLoadFile)
         {
-        	System.out.println("Load File button");
         	int returnVal = fc.showOpenDialog(this);
 
             if (returnVal == JFileChooser.APPROVE_OPTION) {
@@ -154,7 +147,7 @@ public class ControlPanel extends JPanel implements ActionListener {
                 	
                 	if(txtSuccess){
                 		fileloaded();
-                		System.out.println("Opening: " + file.getName() + " with extension: "+extension);
+                		//System.out.println("Opening: " + file.getName() + " with extension: "+extension);
                 	}else{
             			JOptionPane.showMessageDialog(this, "File loaded has error: numbers are written in a wrong format.");
                 	}
@@ -165,20 +158,16 @@ public class ControlPanel extends JPanel implements ActionListener {
                 }
                 
             } else {
-            	System.out.println("Open command cancelled by user.");
+            	//System.out.println("Open command cancelled by user.");
             }
         } else if (src == radioRandom)
         {
-        	System.out.println("Random Radio Pressed");
         	randomPressed();
         } else if (src == radioFile)
         {
-        	System.out.println("File Radio Pressed");
         	selectFileRadio();
         } else if (src == buttonCreateBody)
-        {
-        	System.out.println("Create Body Pressed");
-        	
+        {	
         	if (!radioRandom.isSelected() && !radioFile.isSelected())
         	{
         		JOptionPane.showMessageDialog(null, "Select one option first!");
@@ -195,7 +184,11 @@ public class ControlPanel extends JPanel implements ActionListener {
         	
         } else if (src == buttonResetBody)
         {
-        	System.out.println("Reset Body Pressed");
+        	bodyNumber.setText("");
+        	radioRandom.setSelected(true);
+        	buttonLoadFile.setEnabled(false);
+    		amountLabel.setEnabled(true);
+    		bodyNumber.setEnabled(true);
         }
 	}
 	

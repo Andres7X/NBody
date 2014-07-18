@@ -49,65 +49,64 @@ public class Context {
 				val_mass = Math.random()*ran_mass.nextInt(10)+1;
 			}
 			double final_val_mass = val_mass*Math.pow(10, 22+m);
-			System.out.println(m+" - valore: "+final_val_mass);
+			
 			all_mass[m] = final_val_mass;
 		}
 
 		for (int i = 0; i<nbody; i++)
 		{
-			
-			//Random velocità vogliamo un tetto massimo di 50.000m/s (che può essere positivo o negativo) quindi 
-			//mettiamo un tetto massimo di 100.000 m/s e togliamo ogni volta la metà del tetto al numero random es:
-			//random con Math.random() genera un numero tra 0 e 1.0 * 100.000 - 50.000
 			P2d pos = new P2d((Math.random()*(Utility.rect.width-10-1)+1),(Math.random()*(Utility.rect.height-90-1)+1));
 			pos.x = pos.x * Math.pow(10, 4);
 			pos.y = pos.y * Math.pow(10, 4);
 			
-			System.out.println("X: "+pos.x+" Y: "+pos.y);
-
-	        double vx = ((Math.random()*3000)-1500);
-	        double vy = ((Math.random()*3000)-1500);
+			//Random velocità vogliamo un tetto massimo di 3000m/s (che può essere positivo o negativo) quindi 
+			//mettiamo un tetto massimo di 3000 m/s e togliamo ogni volta la metà del tetto al numero random es:
+			//random con Math.random() genera un numero tra 0 e 1.0 * 3000 - 1500
+	        double vx = ((Math.random()*Utility.max_velocity)-(Utility.max_velocity/2));
+	        double vy = ((Math.random()*Utility.max_velocity)-(Utility.max_velocity/2));
 	        V2d vel = new V2d(vx,vy);
-	        //System.out.println("Vel x: "+vel.x+" Vel y: "+vel.y);
-	        //metto abs perch�� voglio le masse sempre positive
-	        System.out.println(Math.round(Math.random()*5));
+	        
 	        double mass = all_mass[(int)Math.round(Math.random()*5)];
 	    	
-	        Color bodyColour = null;
-	        if (mass >= Math.pow(10, 26))
-	        {
-	        	bodyColour = Utility.color_27[(int)Math.round(Math.random()*1)];
-	        } else if (mass >= Math.pow(10, 25) && mass <= Math.pow(10, 26))
-	        {
-	        	bodyColour = Utility.color_26[(int)Math.round(Math.random()*1)];
-	        } else if (mass >= Math.pow(10, 24) && mass <= Math.pow(10, 25))
-	        {
-	        	bodyColour = Utility.color_25[(int)Math.round(Math.random()*3)];
-	        } else if (mass >= Math.pow(10, 23) && mass <= Math.pow(10, 24))
-	        {
-	        	bodyColour = Utility.color_24[(int)Math.round(Math.random()*1)];
-	        } else if (mass >= Math.pow(10, 22) && mass <= Math.pow(10, 23))
-	        {
-	        	bodyColour = Utility.color_23[(int)Math.round(Math.random()*3)];
-	        } else {
-	        	bodyColour = Utility.color_22[(int)Math.round(Math.random()*3)];
-	        }
+	        Color bodyColour = selectColorForBodyMass(mass);
 
 			Body agent = new Body(i,bodies,pos,vel,mass,bodyColour);
 	        bodies.add(agent);
-	      
-	        
 		}
 		
 		universe.setBodies(bodies);
-
 		universe.printBody();
 		universe.start();
 	}
 	
-	
+	private Color selectColorForBodyMass(double mass)
+	{
+		Color bodyColour = Color.white;
+		
+        if (mass >= Math.pow(10, 26))
+        {
+        	bodyColour = Utility.color_27[(int)Math.round(Math.random()*1)];
+        } else if (mass >= Math.pow(10, 25) && mass <= Math.pow(10, 26))
+        {
+        	bodyColour = Utility.color_26[(int)Math.round(Math.random()*1)];
+        } else if (mass >= Math.pow(10, 24) && mass <= Math.pow(10, 25))
+        {
+        	bodyColour = Utility.color_25[(int)Math.round(Math.random()*3)];
+        } else if (mass >= Math.pow(10, 23) && mass <= Math.pow(10, 24))
+        {
+        	bodyColour = Utility.color_24[(int)Math.round(Math.random()*1)];
+        } else if (mass >= Math.pow(10, 22) && mass <= Math.pow(10, 23))
+        {
+        	bodyColour = Utility.color_23[(int)Math.round(Math.random()*3)];
+        } else {
+        	bodyColour = Utility.color_22[(int)Math.round(Math.random()*3)];
+        }
+        
+		return bodyColour;
+		
+	}
 	public boolean generateBodyFromFile(File file){
-		//Ogni volta pulisco l'array con i corpi
+
 		bodies.clear();
 		
 		boolean generate_body = splitFile(file);
@@ -120,7 +119,6 @@ public class Context {
 		universe = new Universe(bodies.size(),mainFrame);
 
 		universe.setBodies(bodies);
-
 		universe.printBody();
 		universe.start();
 		
@@ -160,7 +158,6 @@ public class Context {
 			}
 			
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
@@ -204,25 +201,7 @@ public class Context {
 		
 			System.out.println("massa: "+mass);
 			
-	        Color bodyColour = null;
-	        if (mass >= Math.pow(10, 26))
-	        {
-	        	bodyColour = Utility.color_27[(int)Math.round(Math.random()*1)];
-	        } else if (mass >= Math.pow(10, 25) && mass <= Math.pow(10, 26))
-	        {
-	        	bodyColour = Utility.color_26[(int)Math.round(Math.random()*1)];
-	        } else if (mass >= Math.pow(10, 24) && mass <= Math.pow(10, 25))
-	        {
-	        	bodyColour = Utility.color_25[(int)Math.round(Math.random()*3)];
-	        } else if (mass >= Math.pow(10, 23) && mass <= Math.pow(10, 24))
-	        {
-	        	bodyColour = Utility.color_24[(int)Math.round(Math.random()*1)];
-	        } else if (mass >= Math.pow(10, 22) && mass <= Math.pow(10, 23))
-	        {
-	        	bodyColour = Utility.color_23[(int)Math.round(Math.random()*3)];
-	        } else {
-	        	bodyColour = Utility.color_22[(int)Math.round(Math.random()*3)];
-	        }
+			Color bodyColour = selectColorForBodyMass(mass);
 	        
 			Body agent = new Body(n_body,bodies,position,velocity,mass,bodyColour);
 			bodies.add(agent);

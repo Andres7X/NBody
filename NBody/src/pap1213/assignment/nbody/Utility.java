@@ -13,7 +13,7 @@ public class Utility {
 	public static final Color[] color_26 = {new Color(231, 76, 60),new Color(192, 57, 43)};
 	public static final Color[] color_27 = {new Color(155, 89, 182),new Color(142, 68, 173)};
 	
-	public static final double dt = 20*0.001;
-	
 	public static final Rectangle rect = GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds();
+	
+	public static double max_velocity = 3000;
 }
