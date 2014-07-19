@@ -19,7 +19,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 /**
  *  Class Universe extends the JPanel Java Swing class.
  *  <p>
- *  It represents the class that contain the GUI of hte Control Panel
+ *  It represents the class that contain the GUI of the Control Panel
  *  
  * 	@author Nompleggio Pietro Antonio, Buscarini Andrea
  */
