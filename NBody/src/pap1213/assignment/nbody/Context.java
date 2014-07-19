@@ -117,7 +117,7 @@ public class Context {
 	{
 		Color bodyColour = Color.white;
 		
-        if (mass >= Math.pow(10, 26))
+        if (mass > Math.pow(10, 26))
         {
         	bodyColour = Utility.color_27[(int)Math.round(Math.random()*1)];
         } else if (mass >= Math.pow(10, 25) && mass <= Math.pow(10, 26))
