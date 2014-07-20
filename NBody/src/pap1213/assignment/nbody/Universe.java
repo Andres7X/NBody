@@ -40,7 +40,7 @@ public class Universe extends Thread {
         frame = mainFrame;
         frame.createUniversePanel();
         cores = Runtime.getRuntime().availableProcessors() + 1;
-        System.out.println("Numero dei cores: "+cores);
+        System.out.println("Numero cores: "+cores);
         executor = Executors.newFixedThreadPool(cores);
    }
     

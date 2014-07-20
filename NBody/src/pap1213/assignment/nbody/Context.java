@@ -117,19 +117,19 @@ public class Context {
 	{
 		Color bodyColour = Color.white;
 		
-        if (mass > Math.pow(10, 26))
+        if (mass >= Math.pow(10, 26))
         {
         	bodyColour = Utility.color_27[(int)Math.round(Math.random()*1)];
-        } else if (mass >= Math.pow(10, 25) && mass <= Math.pow(10, 26))
+        } else if (mass >= Math.pow(10, 25) && mass < Math.pow(10, 26))
         {
         	bodyColour = Utility.color_26[(int)Math.round(Math.random()*1)];
-        } else if (mass >= Math.pow(10, 24) && mass <= Math.pow(10, 25))
+        } else if (mass >= Math.pow(10, 24) && mass < Math.pow(10, 25))
         {
         	bodyColour = Utility.color_25[(int)Math.round(Math.random()*3)];
-        } else if (mass >= Math.pow(10, 23) && mass <= Math.pow(10, 24))
+        } else if (mass >= Math.pow(10, 23) && mass < Math.pow(10, 24))
         {
         	bodyColour = Utility.color_24[(int)Math.round(Math.random()*1)];
-        } else if (mass >= Math.pow(10, 22) && mass <= Math.pow(10, 23))
+        } else if (mass >= Math.pow(10, 22) && mass < Math.pow(10, 23))
         {
         	bodyColour = Utility.color_23[(int)Math.round(Math.random()*3)];
         } else {
