@@ -84,11 +84,11 @@ public class Context {
 			pos.x = pos.x * Math.pow(10, 4);
 			pos.y = pos.y * Math.pow(10, 4);
 			
-			//Random velocita vogliamo un tetto massimo di 3000m/s (che puo essere positivo o negativo) quindi 
+			//Random velocita vogliamo una velocita massima di 1500m/s (che puo essere positivo o negativo) quindi 
 			//mettiamo un tetto massimo di 3000 m/s e togliamo ogni volta la meta del tetto al numero random es:
 			//random con Math.random() genera un numero tra 0 e 1.0 * 3000 - 1500
-	        double vx = ((Math.random()*Utility.max_velocity)-(Utility.max_velocity/2));
-	        double vy = ((Math.random()*Utility.max_velocity)-(Utility.max_velocity/2));
+	        double vx = ((Math.random()*(Utility.max_velocity*2))-Utility.max_velocity);
+	        double vy = ((Math.random()*(Utility.max_velocity*2))-Utility.max_velocity);
 	        V2d vel = new V2d(vx,vy);
 	        
 	        double mass = all_mass[(int)Math.round(Math.random()*5)];

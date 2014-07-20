@@ -30,5 +30,5 @@ public class Utility {
 	public static final Rectangle rect = GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds();
 	
 	//Velocita' massima
-	public static double max_velocity = 3000;
+	public static double max_velocity = 1500;
 }
